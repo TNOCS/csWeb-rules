@@ -59,7 +59,7 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.OR           , /^(or|\|\||\|)/i, true));
         this.push(new ScanRecognizer(TokenType.DATE         , /^([0]?[1-9]|[1|2][0-9]|[3][0|1])[.\/-]([0]?[1-9]|[1][0-2])[.\/-]([0-9]{4}|[0-9]{2})/, true));
         this.push(new ScanRecognizer(TokenType.TIME         , /^([01]\d|2[0123])[:]([0-5]\d)[:]?([0-5]\d)?/, true));
-        this.push(new ScanRecognizer(TokenType.ANY         , /^([\w\d\.\,]+)/i, true));
+        this.push(new ScanRecognizer(TokenType.ANY          , /^([\w\d\.\,]+)/i, true));
         this.push(new ScanRecognizer(TokenType.IDENTIFIER   , /^(\w+\.\w+)/i, true));
     }
 }
