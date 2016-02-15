@@ -1,0 +1,25 @@
+{
+    "version": "1.7.3",
+    "compilerOptions": {
+        "target": "es5",
+        "declaration": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "outDir": "./lib",
+        "preserveConstEnums": true,
+        "removeComments": false,
+        "sourceMap": true
+    },
+    "filesGlob": [
+        "src/**/*.ts"
+    ],
+    "files": [
+        "typings/node/node.d.ts",
+        "typings/jasmine/jasmine.d.ts",
+        "src/lexer/Lexer.ts",
+        "src/lexer/ScannerPatterns.ts",
+        "src/lexer/Token.ts",
+        "test/lexer/lexer-spec.ts"
+    ]
+}
