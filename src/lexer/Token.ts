@@ -25,12 +25,12 @@ export enum TokenType {
     AT,
     AFTER,
     TIME,
+    TIMESPAN,
+    DATE,
     SPEED,
     /** Name with dot */
     IDENTIFIER,
-    /** Single name */
-    NAME,
-    KEYWORD,
+    /** Anything else */
     ANY,
     EOF
 }
@@ -53,9 +53,13 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.PARENS_CLOSE , /^(\))/, true));
         this.push(new ScanRecognizer(TokenType.BEGIN        , /^({)/, true));
         this.push(new ScanRecognizer(TokenType.END          , /^(})/, true));
+        this.push(new ScanRecognizer(TokenType.AT           , /^(at)/i, true));
+        this.push(new ScanRecognizer(TokenType.AFTER        , /^(after)/i, true));
         this.push(new ScanRecognizer(TokenType.AND          , /^(and|&&|&)/i, true));
         this.push(new ScanRecognizer(TokenType.OR           , /^(or|\|\||\|)/i, true));
-        this.push(new ScanRecognizer(TokenType.NAME         , /^(\w+)/i, true));
+        this.push(new ScanRecognizer(TokenType.DATE         , /^([0]?[1-9]|[1|2][0-9]|[3][0|1])[.\/-]([0]?[1-9]|[1][0-2])[.\/-]([0-9]{4}|[0-9]{2})/, true));
+        this.push(new ScanRecognizer(TokenType.TIME         , /^([01]\d|2[0123])[:]([0-5]\d)[:]?([0-5]\d)?/, true));
+        this.push(new ScanRecognizer(TokenType.ANY         , /^([\w\d\.\,]+)/i, true));
         this.push(new ScanRecognizer(TokenType.IDENTIFIER   , /^(\w+\.\w+)/i, true));
     }
 }
@@ -63,7 +67,7 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
 export class Token {
     tokenType: string;
 
-    constructor(public token: TokenType, public match: string, public line?: number, public column?: number) {
+    constructor(public token: TokenType, public line: number, public column: number, public match: string[]) {
         this.tokenType = TokenType[this.token];
     }
 }
