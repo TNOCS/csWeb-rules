@@ -29,16 +29,15 @@ describe('The lexer', function() {
     });
 
     it('should recognize an AND statement.', () => {
-        lexer.tokenList = [];
         lexer.analyse('AND ');
         expect(lexer.tokenList.length).toBe(1);
-        lexer.tokenList = [];
+        lexer.reset();
         lexer.analyse('and ');
         expect(lexer.tokenList.length).toBe(1);
-        lexer.tokenList = [];
+        lexer.reset();
         lexer.analyse('& ');
         expect(lexer.tokenList.length).toBe(1);
-        lexer.tokenList = [];
+        lexer.reset();
         lexer.analyse('&& ');
         expect(lexer.tokenList.length).toBe(1);
     });
@@ -77,5 +76,28 @@ describe('The lexer', function() {
             to users.Peter, users.Frank`);
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(8);
+    });
+
+    it ('should recognize a move command', () => {
+        lexer.analyse('Move to geo.Location3 via geo.path2 at 50km/h.');
+        // console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(7);
+        lexer.reset();
+        lexer.analyse('Move to geo.Location3 via geo.path2 at 50.1234 km/h.');
+        // console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(7);
+        lexer.reset();
+        lexer.analyse('Move to geo.Location3 via geo.path2 at 50 m/s.');
+        // console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(7);
+        lexer.reset();
+        lexer.analyse('Move to geo.Location3 via geo.path2 in 15:30.');
+        // console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(7);
+        lexer.reset();
+        lexer.analyse('Move assets.Car from geo.Location1 to geo.Location2 via geo.path1 in 00:15:00.');
+        // console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(10);
+        expect(lexer.tokenList[9].token).toBe(Token.TokenType.TIME);
     });
 });
