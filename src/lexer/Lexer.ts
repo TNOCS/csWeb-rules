@@ -23,6 +23,12 @@ export class Lexer {
         }
     }
 
+    reset() {
+        this.scannerBuffer = '';
+        this.bufferLength  = -1;
+        this.tokenList     = [];
+    }
+
     /**
      * Update the line and column number.
      */
