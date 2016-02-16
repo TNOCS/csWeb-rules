@@ -20,7 +20,7 @@ describe('The lexer', function() {
 
     it('should count lines.', () => {
         lexer.analyse('Hello, world\r\nbla1\nbla2');
-        console.log(lexer.tokenList);
+        // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
         expect(lexer.tokenList[0].line).toBe(1);
         expect(lexer.tokenList[1].line).toBe(1);
@@ -30,16 +30,16 @@ describe('The lexer', function() {
 
     it('should recognize an AND statement.', () => {
         lexer.tokenList = [];
-        lexer.analyse('AND');
+        lexer.analyse('AND ');
         expect(lexer.tokenList.length).toBe(1);
         lexer.tokenList = [];
-        lexer.analyse('and');
+        lexer.analyse('and ');
         expect(lexer.tokenList.length).toBe(1);
         lexer.tokenList = [];
-        lexer.analyse('&');
+        lexer.analyse('& ');
         expect(lexer.tokenList.length).toBe(1);
         lexer.tokenList = [];
-        lexer.analyse('&&');
+        lexer.analyse('&& ');
         expect(lexer.tokenList.length).toBe(1);
     });
 
@@ -74,9 +74,8 @@ describe('The lexer', function() {
     it ('should recognize an email message', () => {
         lexer.analyse(`Send email emails.weatherForecast
             from users.Erik
-            to users.Peter, users.Frank
-        `);
-        console.log(lexer.tokenList);
+            to users.Peter, users.Frank`);
+        // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(8);
     });
 });
