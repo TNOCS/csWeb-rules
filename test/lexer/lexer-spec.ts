@@ -70,4 +70,13 @@ describe('The lexer', function() {
         expect(lexer.tokenList[0].token === Token.TokenType.AFTER);
         expect(lexer.tokenList[1].token === Token.TokenType.TIME);
     });
+
+    it ('should recognize an email message', () => {
+        lexer.analyse(`Send email emails.weatherForecast
+            from users.Erik
+            to users.Peter, users.Frank
+        `);
+        console.log(lexer.tokenList);
+        expect(lexer.tokenList.length).toBe(8);
+    });
 });

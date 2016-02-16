@@ -45,7 +45,12 @@ export class Lexer {
             if (pattern) {
                 tokenMatch = true;
                 if (pm.isOutputToken) {
-                    this.tokenList.push(new Token.Token(pm.token, this.line, this.column, pattern));
+                    var matches: string[] = [];
+                    // The first match is the whole matching string: if we only have two patterns, the second equals the first, so skip it. 
+                    for (let i = 0, length = pattern.length === 2 ? 1 : pattern.length; i < length; i++) {
+                        matches.push(pattern[i]);
+                    }
+                    this.tokenList.push(new Token.Token(pm.token, this.line, this.column, matches));
                 }
                 this.scannerBuffer = this.scannerBuffer.substr(pattern[0].length);
             }
