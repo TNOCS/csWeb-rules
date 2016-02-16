@@ -5,13 +5,16 @@ export enum TokenType {
     REQUIRE,
     SINGLE_QUOTE,
     DOUBLE_QUOTE,
-    EQUAL,
+    EQUALS,
     PARENS_OPEN,
     PARENS_CLOSE,
     BEGIN,
     END,
     AND,
     OR,
+    ADD,
+    DELETE,
+    SET,
     SEND,
     EMAIL,
     FROM,
@@ -30,6 +33,10 @@ export enum TokenType {
     TIMESPAN,
     DATE,
     SPEED,
+    ACTIVATE,
+    DEACTIVATE,
+    LAYER,
+    FEATURE,
     /** Name with dot */
     IDENTIFIER,
     /** Anything else */
@@ -50,7 +57,7 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.REQUIRE      , /^(require)\s/i, true));
         this.push(new ScanRecognizer(TokenType.SINGLE_QUOTE , /^(')/, true));
         this.push(new ScanRecognizer(TokenType.DOUBLE_QUOTE , /^(")/, true));
-        this.push(new ScanRecognizer(TokenType.EQUAL        , /^(=)\s/, true));
+        this.push(new ScanRecognizer(TokenType.EQUALS        , /^(=)\s/, true));
         this.push(new ScanRecognizer(TokenType.PARENS_OPEN  , /^(\()/, true));
         this.push(new ScanRecognizer(TokenType.PARENS_CLOSE , /^(\))/, true));
         this.push(new ScanRecognizer(TokenType.BEGIN        , /^({)/, true));
@@ -58,6 +65,9 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.AT           , /^(at)\s/i, true));
         this.push(new ScanRecognizer(TokenType.AFTER        , /^(after)\s/i, true));
         this.push(new ScanRecognizer(TokenType.AND          , /^(and|&&|&)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.ADD          , /^(add)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.SET          , /^(set)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.DELETE       , /^(delete)\s/i, true));
         this.push(new ScanRecognizer(TokenType.OR           , /^(or|\|\||\|)\s/i, true));
         this.push(new ScanRecognizer(TokenType.TO           , /^(to)\s/i, true));
         this.push(new ScanRecognizer(TokenType.IN           , /^(in)\s/i, true));
@@ -69,10 +79,14 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.VIA          , /^(via)\s/i, true));
         this.push(new ScanRecognizer(TokenType.FROM         , /^(from)\s/i, true));
         this.push(new ScanRecognizer(TokenType.EMAIL        , /^(email)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.ACTIVATE     , /^(activate)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.DEACTIVATE   , /^(deactivate)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.LAYER        , /^(layer)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.FEATURE      , /^(feature)\s/i, true));
         this.push(new ScanRecognizer(TokenType.COMMA        , /^(,)/, false));
         this.push(new ScanRecognizer(TokenType.DOT          , /^(\.)/, false));
-        this.push(new ScanRecognizer(TokenType.IDENTIFIER   , /^(\w+\.\w+)\s/i, true));
-        this.push(new ScanRecognizer(TokenType.ANY          , /^([\w\d\.\,]+)/i, true));
+        this.push(new ScanRecognizer(TokenType.IDENTIFIER   , /^(\w+\.\w+)\s?/i, true));
+        this.push(new ScanRecognizer(TokenType.ANY          , /^([\w\d\.\,:\\]+)/i, true));
     }
 }
 
