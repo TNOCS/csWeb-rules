@@ -20,6 +20,13 @@
         "src/lexer/Lexer.ts",
         "src/lexer/ScannerPatterns.ts",
         "src/lexer/Token.ts",
-        "test/lexer/lexer-spec.ts"
+        "src/lexer/TokenBuffer.ts",
+        "src/parser/Combinator.ts",
+        "src/parser/CombinatorResult.ts",
+        "src/parser/TerminalParser.ts",
+        "src/parser/Parser.ts",
+        "test/lexer/lexer-spec.ts",
+        "test/parser/combinatorResult-spec.ts",
+        "test/parser/terminalParser-spec.ts"
     ]
 }

@@ -93,7 +93,11 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
 export class Token {
     tokenType: string;
 
-    constructor(public token: TokenType, public line: number, public column: number, public match: string[]) {
+    constructor(public token: TokenType, public line: number, public column: number, public tokenValue: string[]) {
         this.tokenType = TokenType[this.token];
+    }
+
+    isTokenType(tokenMatch: TokenType) {
+        return this.token === tokenMatch;
     }
 }
