@@ -1,8 +1,8 @@
-import {Token}     from '../../src/lexer/Token';
-import {TokenType} from '../../src/lexer/Token';
-import {TokenBuffer} from '../../src/lexer/TokenBuffer';
+import {Token}            from '../../src/lexer/Token';
+import {TokenType}        from '../../src/lexer/Token';
+import {TokenBuffer}      from '../../src/lexer/TokenBuffer';
 import {CombinatorResult} from '../../src/parser/CombinatorResult';
-import {TerminalParser} from '../../src/parser/TerminalParser';
+import {TerminalParser}   from '../../src/parser/TerminalParser';
 
 describe('A TerminalParser', function() {
     var tokenBuffer: TokenBuffer,

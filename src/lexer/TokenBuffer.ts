@@ -11,6 +11,10 @@ export class TokenBuffer {
         return this.tokens[this.nextIndex++];
     }
 
+    hasNextToken() {
+        return this.nextIndex < this.tokens.length;
+    }
+
     /** Returns a list of tokens that still have to be processed. */
     makePoppedTokenList() {
         return this.tokens.slice(this.nextIndex);

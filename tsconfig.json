@@ -5,7 +5,7 @@
         "declaration": true,
         "module": "commonjs",
         "moduleResolution": "node",
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "outDir": "./lib",
         "preserveConstEnums": true,
         "removeComments": false,
@@ -24,9 +24,13 @@
         "src/parser/Combinator.ts",
         "src/parser/CombinatorResult.ts",
         "src/parser/TerminalParser.ts",
+        "src/parser/SequenceCombinator.ts",
+        "src/parser/ListCombinator.ts",
         "src/parser/Parser.ts",
-        "test/lexer/lexer-spec.ts",
-        "test/parser/combinatorResult-spec.ts",
-        "test/parser/terminalParser-spec.ts"
+        "test/lexer/Lexer-spec.ts",
+        "test/parser/CombinatorResult-spec.ts",
+        "test/parser/SequenceCombinator-spec.ts",
+        "test/parser/TerminalParser-spec.ts",
+        "test/parser/Parser-spec.ts"
     ]
 }

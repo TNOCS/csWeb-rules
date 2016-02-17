@@ -20,7 +20,7 @@ describe('A CombinatorResult', function() {
         expect(combinatorResult.matchSuccess()).toBeFalsy();
     });
 
-    it('should return a token buffer', () => {
+    it('should return a token buffer.', () => {
         var combinatorResult = new CombinatorResult(tokenBuffer, true);
         expect(combinatorResult.getTokenBuffer()).toBe(tokenBuffer);
     });
