@@ -1,6 +1,6 @@
-import Token = require('./Token');
+import {ScanRecognizers} from './Token';
 
 /** A list of keywords and the regex required to parse them. */
 export class ScannerPatterns {
-    patternMatchers: Token.ScanRecognizers = new Token.ScanRecognizers();
+    patternMatchers: ScanRecognizers = new ScanRecognizers();
 }

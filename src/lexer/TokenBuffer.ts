@@ -1,13 +1,13 @@
-import * as Token from './Token';
+import {Token} from './Token';
 
 /** Simple utility class to deal with tokens */
 export class TokenBuffer {
     private nextIndex = 0;
 
-    constructor(private tokens: Token.Token[]) {}
+    constructor(private tokens: Token[]) {}
 
     /** Get the next token in the list. */
-    nextToken(): Token.Token {
+    nextToken(): Token {
         return this.tokens[this.nextIndex++];
     }
 

@@ -1,16 +1,17 @@
-import Token = require('./Token');
+import {Token} from './Token';
+import {ScanRecognizers} from './Token';
 
 /** A simple Regex table lexer that scans the input file and generates a list of tokens as output. */
 export class Lexer {
     private eol = /^\s*\r?\n/;
 
     private scannerBuffer:   string;
-    private patternMatchers: Token.ScanRecognizers = new Token.ScanRecognizers();
+    private patternMatchers: ScanRecognizers = new ScanRecognizers();
     private bufferLength:    number;
     private line:            number = 1;
     private column:          number = 1;
 
-    tokenList: Array<Token.Token> = [];
+    tokenList: Array<Token> = [];
 
     analyse(buffer: string) {
         this.scannerBuffer = buffer;
@@ -56,7 +57,7 @@ export class Lexer {
                     for (let i = 0, length = pattern.length === 2 ? 1 : pattern.length; i < length; i++) {
                         matches.push(pattern[i]);
                     }
-                    this.tokenList.push(new Token.Token(pm.token, this.line, this.column, matches));
+                    this.tokenList.push(new Token(pm.token, this.line, this.column, matches));
                 }
                 this.scannerBuffer = this.scannerBuffer.substr(pattern[0].length);
             }

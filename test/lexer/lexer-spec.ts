@@ -1,11 +1,12 @@
-import Lexer = require('../../src/lexer/Lexer');
-import Token = require('../../src/lexer/Token');
+import {Lexer} from '../../src/lexer/Lexer';
+import {Token} from '../../src/lexer/Token';
+import {TokenType} from '../../src/lexer/Token';
 
 describe('The lexer', function() {
-    var lexer: Lexer.Lexer;
+    var lexer: Lexer;
 
     beforeEach(() => {
-        lexer = new Lexer.Lexer();
+        lexer = new Lexer();
     });
 
     it('should recognize spaces.', () => {
@@ -57,17 +58,17 @@ describe('The lexer', function() {
         lexer.analyse('At 28-02-2016 10:00');
         //console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token === Token.TokenType.AT);
-        expect(lexer.tokenList[1].token === Token.TokenType.DATE);
-        expect(lexer.tokenList[2].token === Token.TokenType.TIME);
+        expect(lexer.tokenList[0].token === TokenType.AT);
+        expect(lexer.tokenList[1].token === TokenType.DATE);
+        expect(lexer.tokenList[2].token === TokenType.TIME);
     });
 
     it ('should recognize a timespan command', () => {
         lexer.analyse('After 00:10:00');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(2);
-        expect(lexer.tokenList[0].token === Token.TokenType.AFTER);
-        expect(lexer.tokenList[1].token === Token.TokenType.TIME);
+        expect(lexer.tokenList[0].token === TokenType.AFTER);
+        expect(lexer.tokenList[1].token === TokenType.TIME);
     });
 
     it ('should recognize an email message', () => {
@@ -98,74 +99,74 @@ describe('The lexer', function() {
         lexer.analyse('Move assets.Car from geo.Location1 to geo.Location2 via geo.path1 in 00:15:00.');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(10);
-        expect(lexer.tokenList[9].token).toBe(Token.TokenType.TIME);
+        expect(lexer.tokenList[9].token).toBe(TokenType.TIME);
     });
 
     it ('should recognize an activate/deactivate layer command (by ID)', () => {
         lexer.analyse('Activate layer layerID');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.ACTIVATE);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.LAYER);
+        expect(lexer.tokenList[0].token).toBe(TokenType.ACTIVATE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
         lexer.reset();
         lexer.analyse('Deactivate layer layerID');
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.DEACTIVATE);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.LAYER);
+        expect(lexer.tokenList[0].token).toBe(TokenType.DEACTIVATE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
     });
 
     it ('should recognize an add/delete layer command (by filename)', () => {
         lexer.analyse('Add layer "c:\\my\\new\\layer.json" to group');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(7);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.ADD);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.LAYER);
-        expect(lexer.tokenList[5].token).toBe(Token.TokenType.TO);
-        expect(lexer.tokenList[6].token).toBe(Token.TokenType.ANY);
+        expect(lexer.tokenList[0].token).toBe(TokenType.ADD);
+        expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
+        expect(lexer.tokenList[5].token).toBe(TokenType.TO);
+        expect(lexer.tokenList[6].token).toBe(TokenType.ANY);
         lexer.reset();
         lexer.analyse('Delete layer layerID');
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.DELETE);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.LAYER);
-        expect(lexer.tokenList[2].token).toBe(Token.TokenType.ANY);
+        expect(lexer.tokenList[0].token).toBe(TokenType.DELETE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
+        expect(lexer.tokenList[2].token).toBe(TokenType.ANY);
     });
 
     it ('should recognize an add/delete feature command to the active layer', () => {
         lexer.analyse('Add feature assets.car');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.ADD);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.FEATURE);
-        expect(lexer.tokenList[2].token).toBe(Token.TokenType.IDENTIFIER);
+        expect(lexer.tokenList[0].token).toBe(TokenType.ADD);
+        expect(lexer.tokenList[1].token).toBe(TokenType.FEATURE);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
         lexer.reset();
         lexer.analyse('Delete feature assets.car');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.DELETE);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.FEATURE);
-        expect(lexer.tokenList[2].token).toBe(Token.TokenType.IDENTIFIER);
+        expect(lexer.tokenList[0].token).toBe(TokenType.DELETE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.FEATURE);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
     });
 
     it ('should recognize a set property command', () => {
         lexer.analyse('Activate feature featureID');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(3);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.ACTIVATE);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.FEATURE);
-        expect(lexer.tokenList[2].token).toBe(Token.TokenType.ANY);
+        expect(lexer.tokenList[0].token).toBe(TokenType.ACTIVATE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.FEATURE);
+        expect(lexer.tokenList[2].token).toBe(TokenType.ANY);
         lexer.reset();
         lexer.analyse('Set isAnswered = true');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
-        expect(lexer.tokenList[0].token).toBe(Token.TokenType.SET);
-        expect(lexer.tokenList[1].token).toBe(Token.TokenType.ANY);
-        expect(lexer.tokenList[2].token).toBe(Token.TokenType.EQUALS);
-        expect(lexer.tokenList[3].token).toBe(Token.TokenType.ANY);
+        expect(lexer.tokenList[0].token).toBe(TokenType.SET);
+        expect(lexer.tokenList[1].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[2].token).toBe(TokenType.EQUALS);
+        expect(lexer.tokenList[3].token).toBe(TokenType.ANY);
         lexer.reset();
         lexer.analyse('Set age = 45');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
-        expect(lexer.tokenList[3].token).toBe(Token.TokenType.ANY);
+        expect(lexer.tokenList[3].token).toBe(TokenType.ANY);
     });
 
 });

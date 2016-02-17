@@ -1,29 +1,29 @@
-import * as combinator from './Combinator';
-import * as cr from './CombinatorResult';
-import * as token from '../lexer/Token';
-import * as tb from '../lexer/TokenBuffer';
+import {TokenType} from '../lexer/Token';
+import {CombinatorResult} from './CombinatorResult';
+import {Combinator} from './Combinator';
+import {TokenBuffer} from '../lexer/TokenBuffer';
 
-export class TerminalParser extends combinator.Combinator {
-    private tokenMatch: token.TokenType;
+export class TerminalParser extends Combinator {
+    private tokenMatch: TokenType;
 
-    constructor(match: token.TokenType) {
+    constructor(match: TokenType) {
         super();
         this.tokenMatch = match;
     }
 
-    recognizer(inbound: cr.CombinatorResult) {
+    recognizer(inbound: CombinatorResult) {
         if (!inbound.matchSuccess()) {
             return inbound;
         }
-        var result: cr.CombinatorResult,
+        var result: CombinatorResult,
             tokens = inbound.getTokenBuffer(),
             token = tokens.nextToken();
         if (token.isTokenType(this.tokenMatch)) {
-            var outTokens = new tb.TokenBuffer(tokens.makePoppedTokenList());
-            result = new cr.CombinatorResult(outTokens, true, token.tokenValue);
+            var outTokens = new TokenBuffer(tokens.makePoppedTokenList());
+            result = new CombinatorResult(outTokens, true, token.tokenValue);
             this.action(token.tokenValue);
         } else {
-            result = new cr.CombinatorResult(tokens.reset(), false);
+            result = new CombinatorResult(tokens.reset(), false);
         }
         return result;
     };
