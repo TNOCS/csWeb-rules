@@ -1,12 +1,12 @@
-import {Token}                      from '../lexer/Token';
-import {TokenType}                  from '../lexer/Token';
-import {TokenBuffer}                from '../lexer/TokenBuffer';
-import {Combinator}                 from './Combinator';
-import {CombinatorResult}           from './CombinatorResult';
-import {TerminalParser}             from './TerminalParser';
-import {SequenceCombinator}         from './SequenceCombinator';
-import {OptionalSequenceCombinator} from './SequenceCombinator';
-import {ZeroOrMore}                 from './ListCombinator';
+import {Token}            from '../lexer/Token';
+import {TokenType}        from '../lexer/Token';
+import {TokenBuffer}      from '../lexer/TokenBuffer';
+import {Combinator}       from './Combinator';
+import {CombinatorResult} from './CombinatorResult';
+import {TerminalParser}   from './TerminalParser';
+import {Sequence}         from './SequenceCombinator';
+import {ZeroOrOne}        from './SequenceCombinator';
+import {ZeroOrMore}       from './ListCombinator';
 
 export class Parser {
     terminals: { [key: string]: Combinator } = {};
@@ -25,22 +25,22 @@ export class Parser {
             }
         }
         // console.log('terminal: ', this.terminal);
-        this.nonTerminals['Send email'] = new SequenceCombinator(
+        this.nonTerminals['Send email'] = new Sequence(
             (matches, ruleDesc) => {
                 console.dir(ruleDesc);
             },
-            new SequenceCombinator(
+            new Sequence(
                 (matches, ruleDesc) => { ruleDesc['emailID'] = matches[2][0]; },
                 this.terminals[TokenType[TokenType.SEND]],
                 this.terminals[TokenType[TokenType.EMAIL]],
                 this.terminals[TokenType[TokenType.IDENTIFIER]]
             ),
-            new OptionalSequenceCombinator(
+            new ZeroOrOne(
                 (matches, ruleDesc) => { ruleDesc['from'] = matches[1][0]; },
                 this.terminals[TokenType[TokenType.FROM]],
                 this.terminals[TokenType[TokenType.IDENTIFIER]]
             ),
-            new SequenceCombinator(
+            new Sequence(
                 (matches, ruleDesc) => { ruleDesc['to'] = [ matches[1][0] ]; },
                 this.terminals[TokenType[TokenType.TO]],
                 this.terminals[TokenType[TokenType.IDENTIFIER]]
@@ -49,6 +49,7 @@ export class Parser {
                 (matches, ruleDesc) => {
                     if (matches) matches.forEach(match => (<string[]> ruleDesc['to']).push(match[0]) );
                 },
+                new ZeroOrOne(null, this.terminals[TokenType[TokenType.AND]]),
                 this.terminals[TokenType[TokenType.IDENTIFIER]])
         );
     }

@@ -24,12 +24,14 @@ export abstract class AbstractListCombinator extends Combinator {
             productionIndex: number,
             matches: string[][]           = [];
 
-        while (latestResult.matchSuccess() && latestResult.hasNextToken) {
+        while (latestResult.matchSuccess() && latestResult.hasNextToken()) {
             productionIndex = 0;
             while (latestResult.matchSuccess() && productionIndex < this.productions.length) {
                 let p = this.productions[productionIndex++];
                 latestResult = p.recognizer(latestResult);
-                if (latestResult.matchSuccess()) matches[resultIndex++] = latestResult.getMatchValue();
+                if (!latestResult.matchSuccess()) continue;
+                let matchValue = latestResult.getMatchValue();
+                if (matchValue.length > 0) matches[resultIndex++] = matchValue;
             }
         }
 
