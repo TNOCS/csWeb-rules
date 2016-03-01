@@ -14,7 +14,7 @@ export class RuleDescription {
 }
 
 export class CombinatorResult {
-    constructor(private tokenBuffer: TokenBuffer, private matchStatus: boolean, public result = new RuleDescription(), private matchValue: string[] = []) {}
+    constructor(private tokenBuffer: TokenBuffer, private matchStatus: boolean, public ruleDesc = new RuleDescription(), private matchValue: string[] = []) {}
 
     /** Returns true if the match was successful. */
     matchSuccess() { return this.matchStatus; }

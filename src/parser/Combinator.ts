@@ -1,7 +1,8 @@
 import {CombinatorResult} from './CombinatorResult';
+import {RuleDescription}  from './CombinatorResult';
 
 export interface ICombinatorAction {
-    (matches: string[][], result: CombinatorResult): void;
+    (matches: string[][], ruleDesc: RuleDescription): void;
 }
 
 export abstract class Combinator {
