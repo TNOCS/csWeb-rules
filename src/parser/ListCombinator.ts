@@ -1,34 +1,39 @@
-import {Combinator}       from './Combinator';
-import {CombinatorResult} from './CombinatorResult';
+import {Combinator}        from './Combinator';
+import {ICombinatorAction} from './Combinator';
+import {CombinatorResult}  from './CombinatorResult';
 
 /**
- * The ListCombinator matches a list of the same tokens (zero or more times, i.e. matchedToken*).
+ * The ListCombinator matches a list of the same tokens (zero or more times, i.e. (ab)*).
  */
 export class ListCombinator extends Combinator {
-    constructor(private production: Combinator) {
+    /**
+     * Constructor
+     * @param  {ICombinatorAction} action
+     * @param  {Combinator[]} ...productions
+     */
+    constructor(action: ICombinatorAction, ...productions: Combinator[]) {
         super();
+        this.action = action;
+        this.productions = productions;
     }
 
     recognizer(inbound: CombinatorResult) {
-        if (!inbound.matchSuccess()) {
-            return inbound;
-        }
-        var latestResult = inbound,
-            results: string[] = [];
+        if (!inbound.matchSuccess()) return inbound;
+        var latestResult                  = inbound,
+            resultIndex                   = 0,
+            productionIndex: number,
+            matches: string[][]           = [];
 
-        while (latestResult.matchSuccess()) {
-            latestResult = this.production.recognizer(latestResult);
-            if (latestResult.matchSuccess()) {
-                latestResult.getMatchValue().forEach(m => results.push(m));
+        while (latestResult.matchSuccess() && latestResult.hasNextToken) {
+            productionIndex = 0;
+            while (latestResult.matchSuccess() && productionIndex < this.productions.length) {
+                let p = this.productions[productionIndex++];
+                latestResult = p.recognizer(latestResult);
+                if (latestResult.matchSuccess()) matches[resultIndex++] = latestResult.getMatchValue();
             }
         }
 
-        if (results.length > 0) {
-            this.action(results);
-            latestResult = new CombinatorResult(latestResult.getTokenBuffer(), true, results);
-        }
-        return latestResult;
+        if (resultIndex > 0 && this.action) this.action(matches, latestResult);
+        return new CombinatorResult(latestResult.getTokenBuffer(), true, latestResult.result);
     }
-
-    action(results: string[]) {}
 }

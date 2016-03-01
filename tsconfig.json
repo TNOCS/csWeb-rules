@@ -17,6 +17,7 @@
     "files": [
         "typings/node/node.d.ts",
         "typings/jasmine/jasmine.d.ts",
+        "src/helpers/utils.ts",
         "src/lexer/Lexer.ts",
         "src/lexer/ScannerPatterns.ts",
         "src/lexer/Token.ts",
@@ -27,10 +28,11 @@
         "src/parser/SequenceCombinator.ts",
         "src/parser/ListCombinator.ts",
         "src/parser/Parser.ts",
-        "test/lexer/Lexer-spec.ts",
-        "test/parser/CombinatorResult-spec.ts",
-        "test/parser/SequenceCombinator-spec.ts",
-        "test/parser/TerminalParser-spec.ts",
-        "test/parser/Parser-spec.ts"
+        "spec/lexer/Lexer-spec.ts",
+        "spec/parser/CombinatorResult-spec.ts",
+        "spec/parser/SequenceCombinator-spec.ts",
+        "spec/parser/ListCombinator-spec.ts",
+        "spec/parser/TerminalParser-spec.ts",
+        "spec/parser/Parser-spec.ts"
     ]
 }

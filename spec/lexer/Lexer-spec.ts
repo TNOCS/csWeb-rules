@@ -169,4 +169,11 @@ describe('The lexer', function() {
         expect(lexer.tokenList[3].token).toBe(TokenType.ANY);
     });
 
+    it ('should recognize a sequence of identifiers, separated by commas.', () => {
+        lexer.analyse('users.erik, users.bert, users.cor.');
+        expect(lexer.tokenList.length).toBe(3);
+        expect(lexer.tokenList[0].token).toBe(TokenType.IDENTIFIER);
+        expect(lexer.tokenList[1].token).toBe(TokenType.IDENTIFIER);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
+    });
 });

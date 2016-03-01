@@ -1,4 +1,4 @@
-import {Token}          from '../lexer/Token';
+import {Token}                      from '../lexer/Token';
 import {TokenType}                  from '../lexer/Token';
 import {TokenBuffer}                from '../lexer/TokenBuffer';
 import {Combinator}                 from './Combinator';
@@ -6,13 +6,14 @@ import {CombinatorResult}           from './CombinatorResult';
 import {TerminalParser}             from './TerminalParser';
 import {SequenceCombinator}         from './SequenceCombinator';
 import {OptionalSequenceCombinator} from './SequenceCombinator';
+import {ListCombinator}             from './ListCombinator';
 
 export class Parser {
-    private nonTerminals: { [key: string]: Combinator };
+    terminals: { [key: string]: Combinator } = {};
+    nonTerminals: { [key: string]: Combinator };
     recognizedNonTerminals: string[];
 
     constructor() {
-        var terminals: { [key: string]: Combinator } = {};
         this.nonTerminals = {};
         this.recognizedNonTerminals = [];
 
@@ -20,18 +21,35 @@ export class Parser {
             if (parseInt(tt, 10) >= 0) {
                 var name: string = TokenType[tt];
                 var tokenType: TokenType = TokenType[name];
-                terminals[name] = new TerminalParser(tokenType);
+                this.terminals[name] = new TerminalParser(tokenType);
             }
         }
         // console.log('terminal: ', this.terminal);
         this.nonTerminals['Send email'] = new SequenceCombinator(
-            terminals[TokenType[TokenType.SEND]],
-            terminals[TokenType[TokenType.EMAIL]],
-            terminals[TokenType[TokenType.IDENTIFIER]],
-            terminals[TokenType[TokenType.FROM]],
-            terminals[TokenType[TokenType.IDENTIFIER]],
-            terminals[TokenType[TokenType.TO]],
-            terminals[TokenType[TokenType.IDENTIFIER]]
+            (matches, combinatorResult) => {
+                console.dir(combinatorResult.result);
+            },
+            new SequenceCombinator(
+                (matches, combinatorResult) => { combinatorResult.result['emailID'] = matches[2][0]; },
+                this.terminals[TokenType[TokenType.SEND]],
+                this.terminals[TokenType[TokenType.EMAIL]],
+                this.terminals[TokenType[TokenType.IDENTIFIER]]
+            ),
+            new OptionalSequenceCombinator(
+                (matches, combinatorResult) => { combinatorResult.result['from'] = matches[1][0]; },
+                this.terminals[TokenType[TokenType.FROM]],
+                this.terminals[TokenType[TokenType.IDENTIFIER]]
+            ),
+            new SequenceCombinator(
+                (matches, combinatorResult) => { combinatorResult.result['to'] = [ matches[1][0] ]; },
+                this.terminals[TokenType[TokenType.TO]],
+                this.terminals[TokenType[TokenType.IDENTIFIER]]
+            ),
+            new ListCombinator(
+                (matches, combinatorResult) => {
+                    if (matches) matches.forEach(match => (<string[]> combinatorResult.result['to']).push(match[0]) );
+                },
+                this.terminals[TokenType[TokenType.IDENTIFIER]])
         );
     }
 
@@ -50,10 +68,13 @@ export class Parser {
             var nonTerminal = this.nonTerminals[key];
             latestResult = nonTerminal.recognizer(inbound);
             if (latestResult.matchSuccess()) {
-                this.recognizedNonTerminals.push(key);
-                return latestResult;
+                break;
             }
         }
-        return inbound;
+        if (latestResult.matchSuccess()) {
+           this.recognizedNonTerminals.push(key);
+            // TODO take action
+        }
+        return new CombinatorResult(inbound.getTokenBuffer(), latestResult.matchSuccess());
     }
 }

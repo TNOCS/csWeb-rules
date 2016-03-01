@@ -9,7 +9,8 @@ import {Parser}           from '../../src/parser/Parser';
 describe('The parser', function() {
     var emailTokenBuffer: TokenBuffer,
         emailCombinatorResult: CombinatorResult,
-        lexer: Lexer;
+        lexer: Lexer,
+        parser: Parser;
 
     beforeEach(() => {
         emailTokenBuffer = new TokenBuffer([
@@ -22,19 +23,39 @@ describe('The parser', function() {
             new Token(TokenType.IDENTIFIER, 1, 10, ['bert']),
         ]);
         emailCombinatorResult = new CombinatorResult(emailTokenBuffer, true);
+        parser = new Parser();
         lexer = new Lexer();
     });
 
     it('should parse an email token buffer.', () => {
-        var parser = new Parser();
         parser.parse(emailTokenBuffer);
         expect(parser.recognizedNonTerminals.length).toBe(1);
         expect(parser.recognizedNonTerminals[0]).toBe('Send email');
     });
 
     it('should parse textual emails.', () => {
-        lexer.analyse('Send email emails.weather from users.erik to users.bert.');
-        var parser = new Parser();
+        lexer.analyse('Send email emails.weather1 from users.erik to users.bert.');
+        parser.parse(new TokenBuffer(lexer.tokenList));
+        expect(parser.recognizedNonTerminals.length).toBe(1);
+        expect(parser.recognizedNonTerminals[0]).toBe('Send email');
+    });
+
+    it('should parse textual emails with multiple addressees, separated by commas.', () => {
+        lexer.analyse('Send email emails.weather2 from users.erik to users.bert, users.jan, users.kees.');
+        parser.parse(new TokenBuffer(lexer.tokenList));
+        expect(parser.recognizedNonTerminals.length).toBe(1);
+        expect(parser.recognizedNonTerminals[0]).toBe('Send email');
+    });
+
+    it('should parse textual emails with multiple addressees, separated by AND.', () => {
+        lexer.analyse('Send email emails.weather3 from users.erik to users.bert, users.jan, and users.kees.');
+        parser.parse(new TokenBuffer(lexer.tokenList));
+        expect(parser.recognizedNonTerminals.length).toBe(1);
+        expect(parser.recognizedNonTerminals[0]).toBe('Send email');
+    });
+
+    xit('should parse emails with an optional CC.', () => {
+        lexer.analyse('Send email emails.weather4 from users.erik to users.bert cc users.jan.');
         parser.parse(new TokenBuffer(lexer.tokenList));
         expect(parser.recognizedNonTerminals.length).toBe(1);
         expect(parser.recognizedNonTerminals[0]).toBe('Send email');
