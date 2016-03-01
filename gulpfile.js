@@ -1,7 +1,7 @@
 var gulp         = require('gulp'),
     tslint       = require('gulp-tslint'),
     exec         = require('child_process').exec,
-    jasmine      = require('gulp-jasmine-node'),
+    jasmine      = require('gulp-jasmine'),
     gulp         = require('gulp-help')(gulp),
     tsconfig     = require('gulp-tsconfig-files'),
     path         = require('path'),
@@ -56,14 +56,14 @@ gulp.task('_build', 'INTERNAL TASK - Compiles all TypeScript source files', func
 //run tslint task, then run _tsconfig_files and _gen_tsrefs in parallel, then run _build
 gulp.task('build', 'Compiles all TypeScript source files and updates module references', gulpSequence('tslint', ['tsconfig_files', 'gen_tsrefs'], '_build'));
 
-gulp.task('test', 'Runs the test specs', function (cb) {
-    gulp.src('lib/test/**/*.js')
+gulp.task('test', 'Runs the test specs', function() {
+    return gulp.src('lib/spec/**/*.js')
         .pipe(jasmine({
+            errorOnFail: false,
             showColors: true,
             includeStackTrace: false,
             verbose: false
         }));
-    cb();
 });
 
 gulp.task('run', 'Runs node', function(cb) {
@@ -80,7 +80,7 @@ var watchOptions = {
     mode: 'watch'
 }; 
 gulp.task('watch', 'Watches the test files for changes', function () {
-    gulp.watch('lib/test/**/*.js', watchOptions, ['test']);
+    gulp.watch('lib/**/*.js', watchOptions, ['test']);
 });
  
 gulp.task('default', 'Default tasks runs the tests on change', ['watch']);
