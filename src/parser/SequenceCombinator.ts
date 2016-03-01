@@ -32,7 +32,7 @@ export class SequenceCombinator extends Combinator {
         }
 
         if (latestResult.matchSuccess()) {
-            this.action(matches, latestResult);
+            this.action(matches, latestResult.ruleDesc);
         } else {
             latestResult = new CombinatorResult(inbound.getTokenBuffer(), false);
         }
@@ -74,7 +74,7 @@ export class OptionalSequenceCombinator extends Combinator {
         }
 
         if (latestResult.matchSuccess()) {
-            this.action(matches, latestResult);
+            this.action(matches, latestResult.ruleDesc);
         } else {
             latestResult = new CombinatorResult(inbound.getTokenBuffer(), true);
         }

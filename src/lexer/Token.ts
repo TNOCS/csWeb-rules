@@ -37,11 +37,11 @@ export enum TokenType {
     DEACTIVATE,
     LAYER,
     FEATURE,
+    EOF,
     /** Name with dot */
     IDENTIFIER,
     /** Anything else */
-    ANY,
-    EOF
+    ANY
 }
 
 export class ScanRecognizer {
@@ -57,7 +57,7 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.REQUIRE      , /^(require)\s/i, true));
         this.push(new ScanRecognizer(TokenType.SINGLE_QUOTE , /^(')/, true));
         this.push(new ScanRecognizer(TokenType.DOUBLE_QUOTE , /^(")/, true));
-        this.push(new ScanRecognizer(TokenType.EQUALS        , /^(=)\s/, true));
+        this.push(new ScanRecognizer(TokenType.EQUALS       , /^(=)\s/, true));
         this.push(new ScanRecognizer(TokenType.PARENS_OPEN  , /^(\()/, true));
         this.push(new ScanRecognizer(TokenType.PARENS_CLOSE , /^(\))/, true));
         this.push(new ScanRecognizer(TokenType.BEGIN        , /^({)/, true));

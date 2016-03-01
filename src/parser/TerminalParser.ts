@@ -24,16 +24,16 @@ export class TerminalParser extends Combinator {
      */
     recognizer(inbound: CombinatorResult) {
         if (!inbound.matchSuccess()) return inbound;
-        if (!inbound.hasNextToken()) return new CombinatorResult(inbound.getTokenBuffer(), false, inbound.result);
+        if (!inbound.hasNextToken()) return new CombinatorResult(inbound.getTokenBuffer(), false, inbound.ruleDesc);
         var latestResult: CombinatorResult,
             tokens = inbound.getTokenBuffer(),
             token = tokens.nextToken();
         if (token.isTokenType(this.tokenMatch)) {
             var outTokens = new TokenBuffer(tokens.makePoppedTokenList());
-            latestResult = new CombinatorResult(outTokens, true, inbound.result, token.tokenValue);
-            if (this.action) this.action([token.tokenValue], latestResult);
+            latestResult = new CombinatorResult(outTokens, true, inbound.ruleDesc, token.tokenValue);
+            if (this.action) this.action([token.tokenValue], latestResult.ruleDesc);
         } else {
-            latestResult = new CombinatorResult(tokens.reset(), false, inbound.result);
+            latestResult = new CombinatorResult(tokens.reset(), false, inbound.ruleDesc);
         }
         return latestResult;
     };
