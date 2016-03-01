@@ -18,10 +18,10 @@
   "devDependencies": {
     "browserify": "^13.0.0",
     "del": "2.0.2",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-help": "^1.6.0",
     "gulp-inject": "3.0.0",
-    "gulp-jasmine-node": "^1.0.6",
+    "gulp-jasmine": "^2.3.0",
     "gulp-sequence": "0.4.1",
     "gulp-tsconfig-files": "0.0.2",
     "gulp-tslint": "^3.1",
