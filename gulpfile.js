@@ -83,4 +83,4 @@ gulp.task('watch', 'Watches the test files for changes', function () {
     gulp.watch('lib/**/*.js', watchOptions, ['test']);
 });
  
-gulp.task('default', 'Default tasks runs the tests on change', ['watch']);
+gulp.task('default', 'Default tasks runs the tests on change', ['test', 'watch']);
