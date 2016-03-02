@@ -22,20 +22,20 @@ export abstract class AbstractSequenceCombinator extends Combinator {
      * @param  {CombinatorResult} inbound
      */
     recognizer(inbound: CombinatorResult) {
-        if (!inbound.matchSuccess()) return inbound;
+        if (!inbound.matchSuccess) return inbound;
         var latestResult                  = inbound,
             productionIndex               = 0,
             resultIndex                   = 0,
             matches: string[][]           = [];
 
-        while (latestResult.matchSuccess() && productionIndex < this.productions.length) {
+        while (latestResult.matchSuccess && productionIndex < this.productions.length) {
             let p = this.productions[productionIndex++];
             latestResult = p.recognizer(latestResult);
             let matchValue = latestResult.getMatchValue();
             if (matchValue.length > 0) matches[resultIndex++] = matchValue;
         }
 
-        if (latestResult.matchSuccess() && this.action) {
+        if (latestResult.matchSuccess && this.action) {
             this.action(matches, latestResult.ruleDesc);
         } else {
             latestResult = new CombinatorResult(inbound.getTokenBuffer(), this.isOptional, latestResult.ruleDesc);

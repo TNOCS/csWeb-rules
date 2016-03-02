@@ -23,8 +23,8 @@ export class TerminalParser extends Combinator {
      * @param  {CombinatorResult} inbound
      */
     recognizer(inbound: CombinatorResult) {
-        if (!inbound.matchSuccess()) return inbound;
-        if (!inbound.hasNextToken()) return new CombinatorResult(inbound.getTokenBuffer(), false, inbound.ruleDesc);
+        if (!inbound.matchSuccess) return inbound;
+        if (!inbound.hasNextToken) return new CombinatorResult(inbound.getTokenBuffer(), false, inbound.ruleDesc);
         var latestResult: CombinatorResult,
             tokens = inbound.getTokenBuffer(),
             token = tokens.nextToken();

@@ -18,18 +18,18 @@ export abstract class AbstractListCombinator extends Combinator {
     }
 
     recognizer(inbound: CombinatorResult) {
-        if (!inbound.matchSuccess()) return inbound;
+        if (!inbound.matchSuccess) return inbound;
         var latestResult                  = inbound,
             resultIndex                   = 0,
             productionIndex: number,
             matches: string[][]           = [];
 
-        while (latestResult.matchSuccess() && latestResult.hasNextToken()) {
+        while (latestResult.matchSuccess && latestResult.hasNextToken) {
             productionIndex = 0;
-            while (latestResult.matchSuccess() && productionIndex < this.productions.length) {
+            while (latestResult.matchSuccess && productionIndex < this.productions.length) {
                 let p = this.productions[productionIndex++];
                 latestResult = p.recognizer(latestResult);
-                if (!latestResult.matchSuccess()) continue;
+                if (!latestResult.matchSuccess) continue;
                 let matchValue = latestResult.getMatchValue();
                 if (matchValue.length > 0) matches[resultIndex++] = matchValue;
             }

@@ -15,9 +15,9 @@ describe('A CombinatorResult', function() {
 
     it('should return the correct match success.', () => {
         var combinatorResult = new CombinatorResult(tokenBuffer, true);
-        expect(combinatorResult.matchSuccess()).toBeTruthy();
+        expect(combinatorResult.matchSuccess).toBeTruthy();
         combinatorResult = new CombinatorResult(tokenBuffer, false);
-        expect(combinatorResult.matchSuccess()).toBeFalsy();
+        expect(combinatorResult.matchSuccess).toBeFalsy();
     });
 
     it('should return a token buffer.', () => {

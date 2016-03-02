@@ -56,26 +56,28 @@ export class Parser {
 
     parse(inbound: TokenBuffer) {
         var combinatorResult: CombinatorResult = new CombinatorResult(inbound, true);
-        while (combinatorResult.matchSuccess() && combinatorResult.hasNextToken()) {
+        while (combinatorResult.matchSuccess && combinatorResult.hasNextToken) {
             combinatorResult = this.matchNonTerminal(combinatorResult);
         }
     }
 
     private matchNonTerminal(inbound: CombinatorResult) {
         var latestResult = inbound;
+        var tokensToProcess = inbound.remainingTokensInBuffer;
 
-        for (var key in this.nonTerminals) {
+        var key;
+        for (key in this.nonTerminals) {
             if (!this.nonTerminals.hasOwnProperty(key)) continue;
             var nonTerminal = this.nonTerminals[key];
             latestResult = nonTerminal.recognizer(inbound);
-            if (latestResult.matchSuccess()) {
-                break;
-            }
-        }
-        if (latestResult.matchSuccess()) {
-           this.recognizedNonTerminals.push(key);
+            if (!latestResult.matchSuccess) continue;
+            this.recognizedNonTerminals.push(key);
             // TODO take action
         }
-        return new CombinatorResult(inbound.getTokenBuffer(), latestResult.matchSuccess());
+        var madeProgress = latestResult.remainingTokensInBuffer < tokensToProcess;
+        if (!madeProgress) {
+            console.error(`Error: Infinite loop detected in non-terminal '${key}'.\nA non-terminal (most likely, a ZeroOrOne combinator) creates a match, but does not consume any tokens.`)
+        }
+        return new CombinatorResult(latestResult.getTokenBuffer(), latestResult.matchSuccess && madeProgress);
     }
 }
