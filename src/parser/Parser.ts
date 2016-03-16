@@ -24,34 +24,6 @@ export class Parser {
                 this.terminals[name] = new TerminalParser(tokenType);
             }
         }
-        // console.log('terminal: ', this.terminal);
-        this.nonTerminals['Send email'] = new Sequence(
-            (matches, ruleDesc) => {
-                console.dir(ruleDesc);
-            },
-            new Sequence(
-                (matches, ruleDesc) => { ruleDesc['emailID'] = matches[2][0]; },
-                this.terminals[TokenType[TokenType.SEND]],
-                this.terminals[TokenType[TokenType.EMAIL]],
-                this.terminals[TokenType[TokenType.IDENTIFIER]]
-            ),
-            new ZeroOrOne(
-                (matches, ruleDesc) => { ruleDesc['from'] = matches[1][0]; },
-                this.terminals[TokenType[TokenType.FROM]],
-                this.terminals[TokenType[TokenType.IDENTIFIER]]
-            ),
-            new Sequence(
-                (matches, ruleDesc) => { ruleDesc['to'] = [ matches[1][0] ]; },
-                this.terminals[TokenType[TokenType.TO]],
-                this.terminals[TokenType[TokenType.IDENTIFIER]]
-            ),
-            new ZeroOrMore(
-                (matches, ruleDesc) => {
-                    if (matches) matches.forEach(match => (<string[]> ruleDesc['to']).push(match[0]) );
-                },
-                new ZeroOrOne(null, this.terminals[TokenType[TokenType.AND]]),
-                this.terminals[TokenType[TokenType.IDENTIFIER]])
-        );
     }
 
     parse(inbound: TokenBuffer) {

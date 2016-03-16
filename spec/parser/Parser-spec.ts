@@ -4,13 +4,13 @@ import {TokenBuffer}      from '../../src/lexer/TokenBuffer';
 import {Lexer}            from '../../src/lexer/Lexer';
 import {CombinatorResult} from '../../src/parser/CombinatorResult';
 import {TerminalParser}   from '../../src/parser/TerminalParser';
-import {Parser}           from '../../src/parser/Parser';
+import {ScenarioParser}   from '../../src/scenario/ScenarioParser';
 
 describe('The parser', function() {
     var emailTokenBuffer: TokenBuffer,
         emailCombinatorResult: CombinatorResult,
         lexer: Lexer,
-        parser: Parser;
+        parser: ScenarioParser;
 
     beforeEach(() => {
         emailTokenBuffer = new TokenBuffer([
@@ -23,7 +23,7 @@ describe('The parser', function() {
             new Token(TokenType.IDENTIFIER, 1, 10, ['bert']),
         ]);
         emailCombinatorResult = new CombinatorResult(emailTokenBuffer, true);
-        parser = new Parser();
+        parser = new ScenarioParser();
         lexer = new Lexer();
     });
 

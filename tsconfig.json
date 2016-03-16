@@ -28,6 +28,7 @@
         "src/parser/SequenceCombinator.ts",
         "src/parser/ListCombinator.ts",
         "src/parser/Parser.ts",
+        "src/scenario/ScenarioParser.ts",
         "spec/lexer/Lexer-spec.ts",
         "spec/parser/CombinatorResult-spec.ts",
         "spec/parser/SequenceCombinator-spec.ts",
