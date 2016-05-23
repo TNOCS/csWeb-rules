@@ -2,7 +2,7 @@ import {Token}            from '../../src/lexer/Token';
 import {TokenType}        from '../../src/lexer/Token';
 import {TokenBuffer}      from '../../src/lexer/TokenBuffer';
 import {Combinator}       from '../../src/parser/Combinator';
-import {ZeroOrMore}       from '../../src/parser/ListCombinator';
+import {OneOrMore}        from '../../src/parser/ListCombinator';
 import {OneOrMore}        from '../../src/parser/ListCombinator';
 import {CombinatorResult} from '../../src/parser/CombinatorResult';
 import {Lexer}            from '../../src/lexer/Lexer';
@@ -32,7 +32,7 @@ describe('The ZeroOrMore', function() {
     it ('should recognize a sequence of consequetive identical tokens: a*', () => {
         lexer.analyse('users.erik users.alice users.bob.');
         var result: string[][];
-        parser.nonTerminals['List of Identifiers'] = new ZeroOrMore(
+        parser.nonTerminals['List of Identifiers'] = new OneOrMore(
             (matches, ruleDesc) => { result = matches; },
             parser.terminals[TokenType[TokenType.IDENTIFIER]]
         );
