@@ -7,7 +7,7 @@ import {Sequence, ZeroOrOne} from '../parser/SequenceCombinator';
 import {ZeroOrMore}          from '../parser/ListCombinator';
 import {Parser}              from '../parser/Parser';
 
-export class ScenarioParser extends Parser {
+export class UnmannedParser extends Parser {
     constructor() {
         super();
 
