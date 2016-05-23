@@ -1,0 +1,27 @@
+{
+    "Erik": {
+        "firstname": "Erik",
+        "lastname": "Vullings",
+        "email": "erik.vullings@gmail.com",
+        "mobile": "0612345678",
+        "street": "Oude Waalsdorperweg",
+        "houseNumber": 63,
+        "zip": "2597AK",
+        "city": "The Hague",
+        "country": "The Netherlands",
+        "speed": "1.67",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                4.327379465103149,
+                52.10938475471071
+            ]
+        }
+    },
+    "Peter": {
+        "firstname": "Peter",
+        "lastname": "Smith",
+        "email": "peter.smith@gmail.com",
+        "mobile": "0687654321"
+    }
+}

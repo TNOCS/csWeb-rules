@@ -26,19 +26,9 @@ This project aims to remedy this situation by creating a rule engine that uses a
 * Specyfing the content of rules or messages inside the scenario text file makes the messages very long, and you loose the overview.
 Therefore we require content to be included as regular JSON files, e.g. a JSON file with all users, email messages or locations and paths. So  instead of writing
 ```
-Send email
+Send email emails.emailID
 	 from users.Erik
 	 to users.Peter, users.Frank
-	 subject "My new message"
-	 attachment "filename1", "filename2"
-	 body {
-		Hi Peter, Frank,
-
-		How's life?
- 
-		Cheers,
-	 	Erik
-	 }
 ```
 we specify the email in an external JSON file, reference it as emails.hello, and write
 ```
@@ -62,10 +52,23 @@ After 00:30                             // After a delay of 30 minutes
 After 00:00:05                          // After a delay of 5 seconds
 
 // Selection rules: NOTE that you can only have one active item at a time
+// Also to distinguish between generic rules (default) and feature-specific rules
 Select layers.layerID                   // Make the layerID layer active, so subsequent rules apply to it.
 Select users.alice                      // Make the user Alice the active user
+Select MY_FEATURE_ID					// Only apply the following to item with ID === MY_FEATURE_ID 
 
-// Conditions
+// Conditions (by default, applies to properties, so instead of using property speed, just use speed.
+If speed >= 80 then ...
+// Allow and and or constructs
+If speed >= 80 and vehicle_type == 'my_vehicle_type' then ...
+// Allow string and array checks, i.e. indexOf >= 0
+If role contains 'my_role' then ...
+// ID is a special property, that is not a property
+If id == my_id then ... 
+// Also treat the geometry separately
+If in areas.MY_BOUNDING_BOX then ...
+
+// Take action (after delay)
 
 // Activation and deactivation (also of already scheduled rules)
 
@@ -73,7 +76,7 @@ Select users.alice                      // Make the user Alice the active user
 
 // Set property
 In assets.car set property speed = '30 km/h', sireneOn = true 
-Set property isVisible = true,          // It is assumed there is an active layer, e.g. it was preceded by a Select layers.layerID
+Set property isVisible = true,          // Stll applies to assets.car. It is further assumed there is an active layer, e.g. it was preceded by a Select layers.layerID
 
 // Send rules
 Send email emails.hello from users.alice to users.bob, users.carol
@@ -85,6 +88,9 @@ Move assets.Car from geo.Location1 to geo.Location2 via geo.path1 in 1 hour.
 Move to geo.Location3 via geo.path2 at 50km/h.      // Car is already assumed to be active and have a location
 Move to geo.Location4 via geo.path3 at 30 km/h.
 Move to geo.Location5 at 20 km/h.                   // Move in a straight line
+
+// Notifications (in external app)
+Popup message
 
 ```
 

@@ -7,13 +7,14 @@ import {TerminalParser}   from '../parser/TerminalParser';
 import {Sequence}         from '../parser/SequenceCombinator';
 import {ZeroOrOne}        from '../parser/SequenceCombinator';
 import {ZeroOrMore}       from '../parser/ListCombinator';
-import {Parser} from '../parser/Parser';
+import {Parser}           from '../parser/Parser';
 
 export class ScenarioParser extends Parser {
     constructor() {
         super();
 
         // console.log('terminal: ', this.terminal);
+        // SEND EMAIL EMAIL_ID_IDENTIFIER (FROM SENDER_IDENTIFIER)+ TO TO_IDENTIFIER (AND TO_IDENTIFIERS)+
         this.nonTerminals['Send email'] = new Sequence(
             (matches, ruleDesc) => {
                 ruleDesc['method'] = 'sendEmail';

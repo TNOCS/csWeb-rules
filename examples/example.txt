@@ -1,0 +1,68 @@
+import users  = require('users.json')
+import emails = require('emails.json')
+import assets = require('assets.json')
+import geo 	  = require('positions.geojson')
+
+At 28-02-2016 10:00
+
+// Users should have an email address
+Send email emails.hello from users.alice to users.bob, users.carol
+	from users.Erik
+	to users.Peter, users.Frank
+	subject "My new message"
+	attachment "filename1", "filename2"
+	body {
+		Hi Peter, Frank,
+
+		How's life?
+
+		Cheers,
+		Erik
+	}
+
+// There is no need to add a line break. You could also use "After 30 minutes, move ..." where the comma is optional
+After 30 minutes
+
+// When no asset is selected, use the currently active asset.
+// When an asset has a (current) location, you don't need to specify the from location.
+// If no via is specified, move in a straight line.
+// If no speed is specified, assume that the asset has a default speed, acceleration (and how fast it can turn).
+// TODO If the ETA is not viable with regard to default speed etc., what do we do?
+Move assets.Car from geo.Location1 to geo.Location2 via geo.path1 in 1 hour.
+Move to geo.Location3 via geo.path2 at 50km/h.
+Move to geo.Location4 via geo.path3 at 30 km/h.
+//
+Move to geo.Location5 at 20 km/h.
+
+// TODO How do we extract information from a message, e.g. the choice that the user took (in a questionnaire) or the new location?
+Upon receipt of event.message1 or/and event.message2 {
+	Remove geo.Flood2.
+	Add geo.Flood2.
+	Move assets.Car from geo.Location1 to geo.Location2 via geo.path2 in 1 hour.
+	Move to geo.Location5 via geo.path3 at 100 km/h.
+	After 10 minutes move to geo.Location5 via geo.path4 at 10 m/s.
+}
+
+// Time formats:
+// 1 year(s), 1 month(s), 1 week(s), 1 day(s), 1 hour(s), 1 minute(s), 1 second(s), 1.123 second(s)
+// 10:00 2:30:00
+// 28-02-2016 19:00
+// 28-02-2016 19:00:35
+// 28-02-2016 19:00:35.123
+
+// Speeds:
+// 12 km/h 15km/h
+// 10 m/s 12m/s
+
+// ASSUMPTIONS
+// Whitespace is optional.
+// Comma's and dots (at the end of a line - not as identifier) are optional (ignored in the output stream).
+// Case is ignored, except for identifiers (i.e. users.Erik !== users.erik but move === Move).
+// Assets, users, paths and locations are specified as JSON objects in their own files, not in script files. 
+// Assets and users are based on an extendable schema, i.e. they do have predefined (optional) properties, 
+// e.g. users may have a firstname, lastname, email, mobile, phone, homeAddress, workAddress, and location as well as other
+// properties like job title, organisation, personal email, spouse, fax, userId. 
+// { and } denote the beginning and end of a block.
+// The identifiers always take the form of namespace.objectName.
+// You can only import a JSON file (with an object, i.e. the JSON file should start with a { and end with }).
+// You can include a script file: the content of the included script file is merged with the parent file. 
