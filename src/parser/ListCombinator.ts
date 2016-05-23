@@ -19,10 +19,10 @@ export abstract class AbstractListCombinator extends Combinator {
 
     recognizer(inbound: CombinatorResult) {
         if (!inbound.matchSuccess) return inbound;
-        var latestResult                  = inbound,
-            resultIndex                   = 0,
-            productionIndex: number,
-            matches: string[][]           = [];
+        var latestResult        = inbound,
+            resultIndex         = 0,
+            matches: string[][] = [],
+            productionIndex: number;
 
         while (latestResult.matchSuccess && latestResult.hasNextToken) {
             productionIndex = 0;

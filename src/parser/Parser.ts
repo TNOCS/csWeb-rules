@@ -48,7 +48,8 @@ export class Parser {
         }
         var madeProgress = latestResult.remainingTokensInBuffer < tokensToProcess;
         if (!madeProgress) {
-            console.error(`Error: Infinite loop detected in non-terminal '${key}'.\nA non-terminal (most likely, a ZeroOrOne combinator) creates a match, but does not consume any tokens.`)
+            console.error(`Error: Infinite loop detected in non-terminal '${key}' and inbound sequence ${JSON.stringify(inbound.ruleDesc)}, ${JSON.stringify(inbound, null, 2)} `
+                + `\nA non-terminal (most likely, a ZeroOrOne combinator) creates a match, but does not consume any tokens.`)
         }
         return new CombinatorResult(latestResult.getTokenBuffer(), latestResult.matchSuccess && madeProgress);
     }
