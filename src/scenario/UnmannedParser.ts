@@ -1,46 +1,91 @@
-import {Token, TokenType}    from '../lexer/Token';
-import {TokenBuffer}         from '../lexer/TokenBuffer';
-import {Combinator}          from '../parser/Combinator';
-import {CombinatorResult}    from '../parser/CombinatorResult';
-import {TerminalParser}      from '../parser/TerminalParser';
-import {Sequence, ZeroOrOne} from '../parser/SequenceCombinator';
-import {ZeroOrMore}          from '../parser/ListCombinator';
-import {Parser}              from '../parser/Parser';
+import {Token, TokenType}      from '../lexer/Token';
+import {TokenBuffer}           from '../lexer/TokenBuffer';
+import {Combinator}            from '../parser/Combinator';
+import {RuleDescription}       from '../parser/CombinatorResult';
+import {TerminalParser}        from '../parser/TerminalParser';
+import {Sequence, ZeroOrOne}   from '../parser/SequenceCombinator';
+import {ZeroOrMore, OneOrMore} from '../parser/ListCombinator';
+import {Parser}                from '../parser/Parser';
 
 export class UnmannedParser extends Parser {
+    rules: RuleDescription[] = [];
+
     constructor() {
         super();
 
         // console.log('terminal: ', this.terminal);
-        // SEND EMAIL EMAIL_ID_IDENTIFIER (FROM SENDER_IDENTIFIER)+ TO TO_IDENTIFIER (AND TO_IDENTIFIERS)+
-        this.nonTerminals['Send email'] = new Sequence(
+        this.nonTerminals['Create rule'] = new Sequence(
             (matches, ruleDesc) => {
-                ruleDesc['method'] = 'sendEmail';
-                console.dir(ruleDesc);
+                ruleDesc.method = 'createRule';
+                this.rules.push(ruleDesc);
+                // console.dir(ruleDesc);
             },
             new Sequence(
-                (matches, ruleDesc) => { ruleDesc['emailID'] = matches[2][0]; },
-                this.terminals[TokenType[TokenType.SEND]],
-                this.terminals[TokenType[TokenType.EMAIL]],
-                this.terminals[TokenType[TokenType.IDENTIFIER]]
+                (matches, ruleDesc) => null,
+                this.terminals[TokenType[TokenType.RULE]]
             ),
             new ZeroOrOne(
-                (matches, ruleDesc) => { ruleDesc['from'] = matches[1][0]; },
-                this.terminals[TokenType[TokenType.FROM]],
-                this.terminals[TokenType[TokenType.IDENTIFIER]]
+                (matches, ruleDesc) => { ruleDesc['ruleName'] = matches[0][0]; },
+                this.terminals[TokenType[TokenType.STRING]]
             ),
-            new Sequence(
-                (matches, ruleDesc) => { ruleDesc['to'] = [ matches[1][0] ]; },
-                this.terminals[TokenType[TokenType.TO]],
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['featureId'] = matches[2][0]; },
+                this.terminals[TokenType[TokenType.FOR]],
+                this.terminals[TokenType[TokenType.FEATURE]],
                 this.terminals[TokenType[TokenType.IDENTIFIER]]
-            ),
-            new ZeroOrMore(
-                (matches, ruleDesc) => {
-                    if (matches) matches.forEach(match => (<string[]> ruleDesc['to']).push(match[0]) );
-                },
-                new ZeroOrOne(null, this.terminals[TokenType[TokenType.AND]]),
-                this.terminals[TokenType[TokenType.IDENTIFIER]])
+            )
         );
 
+        this.nonTerminals['Add conditions'] = new Sequence(
+            (matches, ruleDesc) => {
+                ruleDesc.method = 'addCondition';
+                ruleDesc.description = 'Add a condition to the currently active rule, either using CONDITION or AND, followed by property comparator value.';
+                this.rules.push(ruleDesc);
+                // console.dir(ruleDesc);
+            },
+            new ZeroOrOne(
+                (matches, ruleDesc) => null,
+                this.terminals[TokenType[TokenType.CONDITION]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => null,
+                this.terminals[TokenType[TokenType.AND]]
+            ),
+            new Sequence(
+                (matches, ruleDesc) => {
+                    ruleDesc['conditions'] = {
+                        'property': matches[0][0].toLowerCase()
+                    };
+                },
+                this.terminals[TokenType[TokenType.IDENTIFIER]]),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['comparator'] = 'LE'; },
+                this.terminals[TokenType[TokenType.LE]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['comparator'] = 'LEQ'; },
+                this.terminals[TokenType[TokenType.LEQ]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['comparator'] = 'EQUALS'; },
+                this.terminals[TokenType[TokenType.EQUALS]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['comparator'] = 'GEQ'; },
+                this.terminals[TokenType[TokenType.GEQ]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['comparator'] = 'GE'; },
+                this.terminals[TokenType[TokenType.GE]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['value'] = +matches[0][0]; },
+                this.terminals[TokenType[TokenType.NUMBER]]
+            ),
+            new ZeroOrOne(
+                (matches, ruleDesc) => { ruleDesc['conditions']['value'] =  matches[0][0]; },
+                this.terminals[TokenType[TokenType.STRING]]
+            )
+        );
     }
 }
