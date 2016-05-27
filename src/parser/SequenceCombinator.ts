@@ -38,6 +38,7 @@ export abstract class AbstractSequenceCombinator extends Combinator {
         if (latestResult.matchSuccess && this.action) {
             this.action(matches, latestResult.ruleDesc);
         } else {
+            // Failed: so restore the token buffer.
             latestResult = new CombinatorResult(inbound.getTokenBuffer(), this.isOptional, latestResult.ruleDesc);
         }
         return latestResult;

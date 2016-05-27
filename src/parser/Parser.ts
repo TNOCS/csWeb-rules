@@ -1,12 +1,12 @@
-import {Token}            from '../lexer/Token';
-import {TokenType}        from '../lexer/Token';
-import {TokenBuffer}      from '../lexer/TokenBuffer';
-import {Combinator}       from './Combinator';
-import {CombinatorResult} from './CombinatorResult';
-import {TerminalParser}   from './TerminalParser';
-import {Sequence}         from './SequenceCombinator';
-import {ZeroOrOne}        from './SequenceCombinator';
-import {ZeroOrMore}       from './ListCombinator';
+import {Token}                      from '../lexer/Token';
+import {TokenType, ScanRecognizers} from '../lexer/Token';
+import {TokenBuffer}                from '../lexer/TokenBuffer';
+import {Combinator}                 from './Combinator';
+import {CombinatorResult}           from './CombinatorResult';
+import {TerminalParser}             from './TerminalParser';
+import {Sequence}                   from './SequenceCombinator';
+import {ZeroOrOne}                  from './SequenceCombinator';
+import {ZeroOrMore}                 from './ListCombinator';
 
 export class Parser {
     terminals: { [key: string]: Combinator } = {};
@@ -17,13 +17,12 @@ export class Parser {
         this.nonTerminals = {};
         this.recognizedNonTerminals = [];
 
-        for (var tt in TokenType) {
-            if (parseInt(tt, 10) >= 0) {
-                var name: string = TokenType[tt];
-                var tokenType: TokenType = TokenType[name];
-                this.terminals[name] = new TerminalParser(tokenType);
-            }
-        }
+        let scanners = ScanRecognizers.getInstance();
+        scanners.forEach(sr => {
+            var name = TokenType[sr.token];
+            var tokenType: TokenType = TokenType[name];
+            this.terminals[name] = new TerminalParser(tokenType);
+        });
     }
 
     parse(inbound: TokenBuffer) {
@@ -46,11 +45,11 @@ export class Parser {
             this.recognizedNonTerminals.push(key);
             // TODO take action
         }
-        var madeProgress = latestResult.remainingTokensInBuffer < tokensToProcess;
-        if (!madeProgress) {
-            console.error(`Error: Infinite loop detected in non-terminal '${key}' and inbound sequence ${JSON.stringify(inbound.ruleDesc)}, ${JSON.stringify(inbound, null, 2)} `
-                + `\nA non-terminal (most likely, a ZeroOrOne combinator) creates a match, but does not consume any tokens.`)
-        }
-        return new CombinatorResult(latestResult.getTokenBuffer(), latestResult.matchSuccess && madeProgress);
+        // var madeProgress = latestResult.remainingTokensInBuffer < tokensToProcess;
+        // if (!madeProgress) {
+        //     console.error(`Error: Infinite loop detected in non-terminal '${key}' and inbound sequence ${JSON.stringify(inbound.ruleDesc)}, ${JSON.stringify(inbound, null, 2)} `
+        //         + `\nA non-terminal (most likely, a ZeroOrOne combinator) creates a match, but does not consume any tokens.`)
+        // }
+        return new CombinatorResult(latestResult.getTokenBuffer(), latestResult.matchSuccess); // && madeProgress);
     }
 }
