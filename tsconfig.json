@@ -1,8 +1,8 @@
 {
-    "version": "1.7.3",
+    "version": "1.8.10",
     "compilerOptions": {
         "target": "es5",
-        "declaration": true,
+        "declaration": false,
         "module": "commonjs",
         "moduleResolution": "node",
         "noImplicitAny": false,
@@ -12,28 +12,7 @@
         "sourceMap": true
     },
     "filesGlob": [
-        "src/**/*.ts"
-    ],
-    "files": [
-        "typings/node/node.d.ts",
-        "typings/jasmine/jasmine.d.ts",
-        "src/helpers/utils.ts",
-        "src/lexer/Lexer.ts",
-        "src/lexer/ScannerPatterns.ts",
-        "src/lexer/Token.ts",
-        "src/lexer/TokenBuffer.ts",
-        "src/parser/Combinator.ts",
-        "src/parser/CombinatorResult.ts",
-        "src/parser/TerminalParser.ts",
-        "src/parser/SequenceCombinator.ts",
-        "src/parser/ListCombinator.ts",
-        "src/parser/Parser.ts",
-        "src/scenario/ScenarioParser.ts",
-        "spec/lexer/Lexer-spec.ts",
-        "spec/parser/CombinatorResult-spec.ts",
-        "spec/parser/SequenceCombinator-spec.ts",
-        "spec/parser/ListCombinator-spec.ts",
-        "spec/parser/TerminalParser-spec.ts",
-        "spec/parser/Parser-spec.ts"
+        "src/**/*.ts",
+        "spec/**/*.ts"
     ]
 }
