@@ -5,8 +5,8 @@ import {ScanRecognizers} from './Token';
 export class Lexer {
     private eol = /^\s*\r?\n/;
 
+    private patternMatchers = ScanRecognizers.getInstance();
     private scannerBuffer:   string;
-    private patternMatchers: ScanRecognizers = new ScanRecognizers();
     private bufferLength:    number;
     private line:            number = 1;
     private column:          number = 1;
@@ -54,7 +54,7 @@ export class Lexer {
                 if (pm.isOutputToken) {
                     var matches: string[] = [];
                     // The first match is the whole matching string: if we only have two patterns, the second equals the first, so skip it. 
-                    for (let i = 0, length = pattern.length === 2 ? 1 : pattern.length; i < length; i++) {
+                    for (let i = 1; i < pattern.length; i++) {
                         matches.push(pattern[i]);
                     }
                     this.tokenList.push(new Token(pm.token, this.line, this.column, matches));

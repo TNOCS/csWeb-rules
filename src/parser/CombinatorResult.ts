@@ -5,8 +5,10 @@ import {Utils}       from '../helpers/utils';
 export class RuleDescription {
     id:   string;
     name: string;
+    method: string;
+    description: string;
 
-    [key: string]: string | number | Date | string[];
+    [key: string]: string | number | Date | string[] | Object;
 
     constructor() {
         this.id = Utils.createGuid();

@@ -19,8 +19,29 @@ describe('The lexer', function() {
         expect(lexer.tokenList.length).toBe(0);
     });
 
+    it('should recognize (one word) string.', () => {
+        lexer.analyse('hello ');
+        expect(lexer.tokenList.length).toBe(1);
+        expect(lexer.tokenList[0].tokenValue[0]).toBe('hello');
+        expect(lexer.tokenList[0].token === TokenType.STRING);
+    });
+
+    it('should recognize a number.', () => {
+        lexer.analyse('314 ');
+        expect(lexer.tokenList.length).toBe(1);
+        expect(lexer.tokenList[0].tokenValue[0]).toBe('314');
+        expect(lexer.tokenList[0].token === TokenType.NUMBER);
+    });
+
+    it('should recognize a float.', () => {
+        lexer.analyse('3.14 ');
+        expect(lexer.tokenList.length).toBe(1);
+        expect(lexer.tokenList[0].tokenValue[0]).toBe('3.14');
+        expect(lexer.tokenList[0].token === TokenType.NUMBER);
+    });
+
     it('should count lines.', () => {
-        lexer.analyse('Hello, world\r\nbla1\nbla2');
+        lexer.analyse('Hello, world\nbla1\nbla2');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
         expect(lexer.tokenList[0].line).toBe(1);
@@ -51,7 +72,7 @@ describe('The lexer', function() {
     it('should recognize an import statement.', () => {
         lexer.analyse('import users = require(\'users\')');
         // console.log(lexer.tokenList);
-        expect(lexer.tokenList.length).toBe(9);
+        expect(lexer.tokenList.length).toBe(7);
     });
 
     it ('should recognize a time command', () => {
@@ -118,17 +139,17 @@ describe('The lexer', function() {
     it ('should recognize an add/delete layer command (by filename)', () => {
         lexer.analyse('Add layer "c:\\my\\new\\layer.json" to group');
         // console.log(lexer.tokenList);
-        expect(lexer.tokenList.length).toBe(7);
+        expect(lexer.tokenList.length).toBe(5);
         expect(lexer.tokenList[0].token).toBe(TokenType.ADD);
         expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
-        expect(lexer.tokenList[5].token).toBe(TokenType.TO);
-        expect(lexer.tokenList[6].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[3].token).toBe(TokenType.TO);
+        expect(lexer.tokenList[4].token).toBe(TokenType.IDENTIFIER);
         lexer.reset();
         lexer.analyse('Delete layer layerID');
         expect(lexer.tokenList.length).toBe(3);
         expect(lexer.tokenList[0].token).toBe(TokenType.DELETE);
         expect(lexer.tokenList[1].token).toBe(TokenType.LAYER);
-        expect(lexer.tokenList[2].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
     });
 
     it ('should recognize an add/delete feature command to the active layer', () => {
@@ -153,20 +174,20 @@ describe('The lexer', function() {
         expect(lexer.tokenList.length).toBe(3);
         expect(lexer.tokenList[0].token).toBe(TokenType.ACTIVATE);
         expect(lexer.tokenList[1].token).toBe(TokenType.FEATURE);
-        expect(lexer.tokenList[2].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
         lexer.reset();
         lexer.analyse('Set isAnswered = true');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
         expect(lexer.tokenList[0].token).toBe(TokenType.SET);
-        expect(lexer.tokenList[1].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[1].token).toBe(TokenType.IDENTIFIER);
         expect(lexer.tokenList[2].token).toBe(TokenType.EQUALS);
-        expect(lexer.tokenList[3].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[3].token).toBe(TokenType.TRUE);
         lexer.reset();
         lexer.analyse('Set age = 45');
         // console.log(lexer.tokenList);
         expect(lexer.tokenList.length).toBe(4);
-        expect(lexer.tokenList[3].token).toBe(TokenType.ANY);
+        expect(lexer.tokenList[3].token).toBe(TokenType.NUMBER);
     });
 
     it ('should recognize a sequence of identifiers, separated by commas.', () => {
@@ -176,4 +197,28 @@ describe('The lexer', function() {
         expect(lexer.tokenList[1].token).toBe(TokenType.IDENTIFIER);
         expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
     });
+
+    it ('should recognize new rules.', () => {
+        lexer.analyse('Rule');
+        expect(lexer.tokenList.length).toBe(1);
+        expect(lexer.tokenList[0].token).toBe(TokenType.RULE);
+    });
+
+    it ('should recognize new rules for specific features.', () => {
+        lexer.analyse('Rule for featureID');
+        expect(lexer.tokenList.length).toBe(3);
+        expect(lexer.tokenList[0].token).toBe(TokenType.RULE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.FOR);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
+    });
+
+    it ('should recognize new rules for specific features with condition.', () => {
+        lexer.analyse('Rule for featureID\nConditions');
+        expect(lexer.tokenList.length).toBe(4);
+        expect(lexer.tokenList[0].token).toBe(TokenType.RULE);
+        expect(lexer.tokenList[1].token).toBe(TokenType.FOR);
+        expect(lexer.tokenList[2].token).toBe(TokenType.IDENTIFIER);
+        expect(lexer.tokenList[3].token).toBe(TokenType.CONDITION);
+    });
+
 });
