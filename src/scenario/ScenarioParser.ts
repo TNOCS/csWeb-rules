@@ -15,8 +15,8 @@ export class ScenarioParser extends Parser {
         // SEND EMAIL EMAIL_ID_IDENTIFIER (FROM SENDER_IDENTIFIER)+ TO TO_IDENTIFIER (AND TO_IDENTIFIERS)+
         this.nonTerminals['Send email'] = new Sequence(
             (matches, ruleDesc) => {
-                ruleDesc['method'] = 'sendEmail';
-                console.dir(ruleDesc);
+                ruleDesc.method = 'sendEmail';
+                // console.dir(ruleDesc);
             },
             new Sequence(
                 (matches, ruleDesc) => { ruleDesc['emailID'] = matches[2][0]; },
