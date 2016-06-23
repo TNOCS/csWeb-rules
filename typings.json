@@ -1,0 +1,6 @@
+{
+  "name": "test-ts",
+  "globalDependencies": {
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#e5b11858676f54051a890ca63f9c06ab6f515251"
+  }
+}
