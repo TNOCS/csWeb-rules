@@ -35,8 +35,9 @@ export abstract class AbstractListCombinator extends Combinator {
             }
         }
 
-        if (resultIndex > 0 && this.action) this.action(matches, latestResult.ruleDesc);
-        return new CombinatorResult(latestResult.getTokenBuffer(), this.atLeastOneMatch ? resultIndex > 0 : true, latestResult.ruleDesc);
+        let isSuccess = resultIndex > 0;
+        if (isSuccess && this.action) this.action(matches, latestResult.ruleDesc);
+        return new CombinatorResult(latestResult.getTokenBuffer(), this.atLeastOneMatch ? isSuccess : true, latestResult.ruleDesc);
     }
 }
 

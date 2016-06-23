@@ -1,0 +1,14 @@
+RULE 'Exceeds speed limit' FOR TerroristCar
+CONDITION speed > 80 km/h
+ACTION POPUP `The terrorist car speed is ${speed}!`
+ACTION ZOOMTO TerroristCar
+
+RULE 'Exceeds speed limit in zone'
+CONDITION speed > 80 km/h 
+    AND type = car
+    AND in zone3
+ACTION ZOOMTO 
+
+
+IF TerroristCar 
+

@@ -79,9 +79,9 @@ export class ScanRecognizers extends Array<ScanRecognizer> {
         this.push(new ScanRecognizer(TokenType.PARENS_OPEN   , /^({)/, true));
         this.push(new ScanRecognizer(TokenType.PARENS_CLOSE  , /^(})/, true));
         this.push(new ScanRecognizer(TokenType.AT            , /^(at)\s/i, true));
-        this.push(new ScanRecognizer(TokenType.RULE          , /^(rule)\s?/i, true));
-        this.push(new ScanRecognizer(TokenType.CONDITION     , /^(conditions?)\s?/i, true));
-        this.push(new ScanRecognizer(TokenType.ACTION        , /^(actions?)\s?/i, true));
+        this.push(new ScanRecognizer(TokenType.RULE          , /^(rule)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.CONDITION     , /^(conditions?)\s/i, true));
+        this.push(new ScanRecognizer(TokenType.ACTION        , /^(actions?)\s/i, true));
         this.push(new ScanRecognizer(TokenType.FOR           , /^(for)\s/i, true));
         this.push(new ScanRecognizer(TokenType.AFTER         , /^(after)\s/i, true));
         this.push(new ScanRecognizer(TokenType.AND           , /^(and|&&|&)\s/i, true));

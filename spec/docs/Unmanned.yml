@@ -1,0 +1,24 @@
+Rule:
+    Check speed:
+        description: Speed exceeds 80 km/h
+        isActive: true
+        triggerOnce: true
+        conditions:
+            -
+                property: type
+                method: =
+                value: vehicle
+            -
+                speed > 80
+            -
+                property: speed
+                comparator: >
+                value: 80
+                unit: km/h
+        actions:
+            -
+                method: popup
+                message: 'Speed exceeds 80 km/h'
+            -
+                method: zoomto($location)
+

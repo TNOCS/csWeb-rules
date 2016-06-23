@@ -56,6 +56,7 @@ After 00:00:05                          // After a delay of 5 seconds
 Select layers.layerID                   // Make the layerID layer active, so subsequent rules apply to it.
 Select users.alice                      // Make the user Alice the active user
 Select MY_FEATURE_ID					// Only apply the following to item with ID === MY_FEATURE_ID 
+Unselect								// Reset current selection
 
 // Conditions (by default, applies to properties, so instead of using property speed, just use speed.
 If speed >= 80 then ...

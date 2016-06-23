@@ -1,0 +1,87 @@
+{
+    "imports": {
+        "areas": "area.json",
+        "vehicles": "vehicles.json",
+        "locations": "locations.json"
+    },
+    "subscribe": {
+        "tracks": {
+            "url": "http://127.0.0.1:8000",
+            "type": "geojson",
+            "refreshInterval": 1
+        }
+    },
+    "publish": {
+        "imb": {
+            "type": "imb"
+        }
+    },
+    "rules": {
+        "Check speed": {
+            "description": "Check the speed of a vehicle",
+            "recurrence": 1,
+            "featureId": "featureId", // if missing, generic id
+            "isActive": true,
+            "conditions": [{
+                "property": "type",
+                "method": "=",
+                "value": "car"
+            }, {
+                "property": "sirene",
+                "method": "exists"
+            }, {
+                "property": "lightsOn",
+                "method": "isSet"
+            }, {
+                "property": "speed",
+                "method": ">=",
+                "value": 80
+            }, {
+                "property": "$location",
+                "method": "insideBoundary", // outsideBoundary
+                "value": "areas.boundary1"
+            }],
+            "actions": [{
+                "method": "activate", // loadScript
+                "parameter": "otherRule",
+                "delay": 30
+            }, {
+                "method": "set",
+                "property": "lightsOn",
+                "value": true,
+                "delay": 30
+            }, {
+                "parameter": "lightsOn",
+                "method": "=",
+                "value": true,
+                "delay": 30
+            }, {
+                "method": "zoomTo",
+                "property": "$location",
+                "delay": 5
+            }, {
+                "method": "addFeature",
+                "property": "vehicles.car1"
+            }, {
+                "method": "moveTo",
+                "parameter": "locations.meetingPoint1"
+            }, {
+                "method": "popup",
+                "parameter": "Take action",
+                "delay": 5
+            }, {
+                "activateRule": {
+                    "ruleId": "myRule",
+                    "delay": 30,
+                    "unit": "seconds"
+                }
+            }, {
+                "activateRule": {
+                    "ruleId": "myRule"
+                },
+                "delay": 30,
+                "unit": "seconds"
+            }]
+        }
+    }
+}
