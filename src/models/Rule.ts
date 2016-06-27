@@ -330,7 +330,7 @@ export class Rule implements IRule {
         console.log(`Timer ${id}: ${key} = ${value}`)
     }
 
-    private static updateLog(f: IFeature, logs: { [prop: string]: IPropertyUpdate[] }, key: string, now: number, value: string | number | boolean) {
+    // private static updateLog(f: IFeature, logs: { [prop: string]: IPropertyUpdate[] }, key: string, now: number, value: string | number | boolean) {
         // if (!f.logs.hasOwnProperty(key)) f.logs[key] = [];
         // var log: DynamicLayer.IPropertyUpdate = {
         //     'prop': key,
@@ -339,30 +339,30 @@ export class Rule implements IRule {
         // };
         // f.logs[key].push(log);
         // if (logs) logs[key] = f.logs[key];
-    }
+    // }
 
     private updateProperty(f: IFeature, service: IRuleEngineService, key: string, value: any, isAnswer = false) {
-        var now = service.timer.now();
-        if (!f.hasOwnProperty('logs')) f.logs = {};
-        var logs: { [prop: string]: DynamicLayer.IPropertyUpdate[] } = {};
-        Rule.updateLog(f, logs, key, now, value);
-        Rule.updateLog(f, null, 'updated', now, now);
+        // var now = service.timer.now();
+        // if (!f.hasOwnProperty('logs')) f.logs = {};
+        // var logs: { [prop: string]: DynamicLayer.IPropertyUpdate[] } = {};
+        // Rule.updateLog(f, logs, key, now, value);
+        // Rule.updateLog(f, null, 'updated', now, now);
 
-        if (isAnswer) {
-            Rule.updateLog(f, logs, 'answered', now, true);
+        // if (isAnswer) {
+        //     Rule.updateLog(f, logs, 'answered', now, true);
 
-            key = 'tags';
-            if (f.properties.hasOwnProperty(key)) {
-                let index = f.properties[key].indexOf('action');
-                if (index >= 0) {
-                    f.properties[key].splice(index, 1);
-                    Rule.updateLog(f, logs, key, now, f.properties[key]);
-                }
-            }
-        }
-        console.log('Log message: ');
-        service.updateLog(f.id, logs);
-        service.updateFeature(f);
+        //     key = 'tags';
+        //     if (f.properties.hasOwnProperty(key)) {
+        //         let index = f.properties[key].indexOf('action');
+        //         if (index >= 0) {
+        //             f.properties[key].splice(index, 1);
+        //             Rule.updateLog(f, logs, key, now, f.properties[key]);
+        //         }
+        //     }
+        // }
+        // console.log('Log message: ');
+        // service.updateLog(f.id, logs);
+        // service.updateFeature(f);
     }
 
     /** Get the delay, if present, otherwise return 0 */

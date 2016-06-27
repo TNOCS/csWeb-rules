@@ -1,0 +1,6 @@
+{
+    "imports": {
+        "areas": "../imports/provinces.json",
+        "medical": "../imports/medical_posts.json"
+    }
+}

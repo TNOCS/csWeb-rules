@@ -16,17 +16,12 @@ module csComp.Services {
         description?: string;
         /** link to one or more meta description files containing  */
         typeUrl?: string | string[];
-        /** link to url for dynamic sensor data */
-        sensorLink? : ISensorLink;
         /** Type of layer, e.g. GeoJSON, TopoJSON, or WMS */
         type: string;
         /** render type */
         renderType?: string;
         /** Data source */
         url: string;
-        /** Contains extended heatmap information (e.g. list of references to required sources, or weights) */
-        heatmapSettings?: Heatmap.IHeatmapSettings;
-        heatmapItems?: Heatmap.IHeatmapItem[];
         /** WMS sublayers that must be loaded */
         wmsLayers?: string;
         /** If enabled, load the layer */
@@ -37,9 +32,6 @@ module csComp.Services {
         isLoading?: boolean;
         /** Indent the layer, so it seems to be a sublayer. */
         isSublayer?: boolean;
-        mapLayer?: L.LayerGroup<L.ILayer>;
-        /** Group of layers */
-        group: ProjectGroup;
         /** proxy url, using own server, not implemented */
         useProxy?: boolean;
         /** force refresh on chaning bounding box */
@@ -70,7 +62,6 @@ module csComp.Services {
         timeAware: boolean;
         /** if true, use the current focustime to retrieve data from the server */
         timeDependent?: boolean;
-        layerSource: ILayerSource;
         /**
          * Number of seconds between automatic layer refresh.
          * @type {number}
@@ -95,8 +86,6 @@ module csComp.Services {
         /** Reference for URL params: if the URL contains layers=REFERENCE1;REFERENCE2, the two layers will be turned on.  */
         reference?: string;
         events?: Event[];
-        /** Language information that can be used to localize the title and description */
-        languages?: ILanguageData;
         /** layer original source */
         data?: any;
         cesiumDatasource?: any;
@@ -105,9 +94,6 @@ module csComp.Services {
         disableCache?: boolean;
         /** key attached for identifying to */
         cacheKey?: string;
-        /** handle for receiving server events */
-        serverHandle?: MessageBusHandle;
-        parentFeature: IFeature;
         /** list of tags describing this layer */
         tags?: string;
         /** key name of default feature type */
@@ -118,8 +104,6 @@ module csComp.Services {
         updated?: number;
         /** zoom to layer if it gets activated */
         fitToMap? : boolean;
-        /** If true, specifies the properties to publish items on the timeline. */
-        timelineConfig?: Timeline.ITimelineConfig;
     }
 
     /** Layer information. a layer is described in a project file and is always part of a group */
@@ -140,15 +124,8 @@ module csComp.Services {
         renderType: string;
         /** Data source */
         url: string;
-        /** Contains extended heatmap information (e.g. list of references to required sources, or weights) */
-        heatmapSettings: Heatmap.IHeatmapSettings;
-        heatmapItems: Heatmap.IHeatmapItem[];
-        /** Contains hierarchy settings */
-        hierarchySettings: FeatureRelations.IHierarchySettings;
         /** Links to the the (feature & property) type definitions in a separate file */
         typeUrl: string;
-        /** link to url for dynamic sensor data */
-        sensorLink : ISensorLink;
         /** WMS sublayers that must be loaded */
         wmsLayers: string;
         /** If enabled, load the layer */
@@ -159,11 +136,8 @@ module csComp.Services {
         isLoading: boolean;
         /** Indent the layer, so it seems to be a sublayer. */
         isSublayer: boolean;
-        mapLayer: L.LayerGroup<L.ILayer>;
         /** id of the group */
         groupId: string;
-        /** Group of layers */
-        group: ProjectGroup;
         /** proxy url, using own server, not implemented */
         useProxy: boolean;
         /** indicates if features should be shown on timeline */
@@ -185,7 +159,6 @@ module csComp.Services {
         dynamicResource: boolean;
         /** The current bounding box to retreive data from the server */
         BBOX: string;
-        layerSource: ILayerSource;
         /**
          * Number of seconds between automatic layer refresh.
          * @type {number}
@@ -212,47 +185,25 @@ module csComp.Services {
         /** Reference for URL params: if the URL contains layers=REFERENCE1;REFERENCE2, the two layers will be turned on.  */
         reference: string;
         events: Event[];
-        /** Language information that can be used to localize the title and description */
-        languages: ILanguageData;
-
         /** layer specific sensors, can be used for kpis */
         sensors : {[id : string] : number[]}
-
         /** layer original source */
         data: any;
-        /**
-         * Object to hold any specific parameters for a certain type of data source.
-         */
-        dataSourceParameters: IProperty;
         cesiumDatasource: any;
         items: any;
-
         /** use a timestamp with each url request to make them unique (only tile layer for now, timestamp created after each refresh )*/
         disableCache: boolean;
         /** key attached for identifying to */
         cacheKey: string;
-
-        /** handle for receiving server events */
-        serverHandle: MessageBusHandle;
-
         /** Whether layer can be quickly updated instead of completely rerendered */
         quickRefresh: boolean;
-
-        _lastSelectedFeature: IFeature;
-
-        /** link to a parent feature, e.g. city layer references to a parent provence */
-        parentFeature: IFeature;
-
         /** key name of default feature type */
         defaultFeatureType: string;
-
         /**  dynamic projects have a realtime connection with the server. This connection allows you to make changes to the feature & property types and
         feature geometry and property values. changes are distributed to all active clients in realtime */
         isDynamic: boolean;
-
         /** indicates that the contents layer of this layer can be changed */
         isEditable: boolean;
-
         /**
          * Logging mechanism allows you to specify specific property values and geometries in time,
          * it works the same way as sensor data but is optimized for smaller amounts of data and allows not only numbers
@@ -260,10 +211,8 @@ module csComp.Services {
         */
         useLog: boolean;
         isConnected: boolean;
-
         /** this layer contains sensor data, updated when focusTime changes */
         hasSensorData : boolean;
-
         /**
          * gui is used for setting temp. values for rendering
          */
@@ -292,10 +241,6 @@ module csComp.Services {
          */
         minZoom: number;
         maxZoom: number;
-
-        /** handle for receiving zoom events */
-        zoomHandle: MessageBusHandle;
-
         /** True when the layer features are transparent, e.g. when outside zoom range */
         isTransparent: boolean;
 
@@ -316,12 +261,9 @@ module csComp.Services {
                 description:           pl.description,
                 type:                  pl.type,
                 renderType:            pl.renderType,
-                heatmapSettings:       pl.heatmapSettings,
-                heatmapItems:          csComp.Helpers.serialize(pl.heatmapItems, Heatmap.HeatmapItem.serializeableData),
                 url:                   pl.url,
                 typeUrl:               pl.typeUrl,
                 sensors:               pl.sensors,
-                sensorLink :           pl.sensorLink,
                 wmsLayers:             pl.wmsLayers,
                 opacity:               pl.opacity,
                 isSublayer:            pl.isSublayer,
@@ -329,9 +271,7 @@ module csComp.Services {
                 refreshBBOX:           pl.refreshBBOX,
                 refreshTimeInterval:   pl.refreshTimeInterval,
                 quickRefresh:          pl.quickRefresh,
-                languages:             pl.languages,
                 events:                pl.events,
-                dataSourceParameters:  pl.dataSourceParameters,
                 defaultFeatureType:    pl.defaultFeatureType,
                 defaultLegendProperty: pl.defaultLegendProperty,
                 defaultLegend:         pl.defaultLegend,
