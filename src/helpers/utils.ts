@@ -1,3 +1,10 @@
+export interface IBoundingBox {
+    /** Latitude = 0, Longitude = 1 */
+    southWest: number[];
+    /** Latitude = 0, Longitude = 1 */
+    northEast: number[];
+}
+
 export class Utils {
     public static newGuid(): string {
         var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {

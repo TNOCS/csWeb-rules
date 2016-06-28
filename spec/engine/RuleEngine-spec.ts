@@ -4,9 +4,7 @@ describe('The rule engine', function() {
     var ruleEngine: RuleEngine;
 
     beforeEach((done) => {
-        setTimeout(() => {
-            ruleEngine = new RuleEngine(done, '../../../spec/engine/ruleConfig.json');
-        }, 1000);
+        ruleEngine = new RuleEngine(done, '../../../spec/engine/ruleConfig.json');
     });
 
     it('should use a default folder for rules.', (done) => {
@@ -27,6 +25,5 @@ describe('The rule engine', function() {
     it('should be able to import geojson data.', () => {
         expect(ruleEngine.worldState.imports.hasOwnProperty('areas')).toBeTruthy();
     });
-
 
 });

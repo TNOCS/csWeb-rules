@@ -17,7 +17,7 @@ export interface IFeature {
 
 export interface IGeoJsonGeometry {
     type: string;
-    coordinates: any;
+    coordinates: Array<number> | Array<Array<number>> | Array<Array<Array<number>>>
 }
 
 export interface IGeoJsonFile {
