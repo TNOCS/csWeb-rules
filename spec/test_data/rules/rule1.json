@@ -1,6 +1,12 @@
 {
     "imports": {
-        "areas": "../imports/provinces.json",
-        "medical": "../imports/medical_posts.json"
+        "areas": {
+            "path": "../imports/provinces.json",
+            "referenceId": "Provincien"
+        },
+        "medical": {
+            "path": "../imports/medical_posts.json",
+            "referenceId": "LOC_NAAM"
+        }
     }
 }

@@ -1,6 +1,5 @@
 import fs = require('fs');
 import path = require('path');
-import {IFeature, IGeoJsonFile} from '../models/Feature';
 import {Rule, IRule, IRuleFile} from '../models/Rule';
 import {WorldState}             from '../models/WorldState';
 import {RuleEngineConfig}       from './RuleEngineConfig';
@@ -11,8 +10,8 @@ export interface IRuleEngineService {
      * @action: logs-update, feature-update
      * @skip: this one will be skipped ( e.g original source)
      */
-    updateFeature?: (feature: IFeature) => void;
-    addFeature?: (feature: IFeature) => void;
+    updateFeature?: (feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => void;
+    addFeature?: (feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => void;
     /** Update log message */
     updateLog?: (featureId: string, msgBody: {
         // [key: string]: Api.Log[];
@@ -72,16 +71,48 @@ export class RuleEngine {
         if (ruleFile.imports) {
             for (var key in ruleFile.imports) {
                 if (!ruleFile.imports.hasOwnProperty(key)) continue;
-                let importFile = ruleFile.imports[key];
-                this.loadImport(key, folder, importFile);
+                let importFileReference = ruleFile.imports[key];
+                this.importGeoJSON(key, folder, importFileReference);
             }
+        }
+        if (ruleFile.subscribtions) {
+            let subscribtions = ruleFile.subscribtions;
+            //subscribtions.
         }
     }
 
-    private loadImport(key: string, folder: string, file: string) {
-        let importFile = path.isAbsolute(file) ? file : path.join(folder, file);
+    private importGeoJSON(key: string, folder: string, fileReference: { path: string, referenceId?: string}) {
+        let importFile = path.isAbsolute(fileReference.path) ? fileReference.path : path.join(folder, fileReference.path);
         if (!fs.existsSync(importFile)) return;
-        let geojson: IGeoJsonFile = require(importFile);
-        this.worldState.imports[key] = geojson.features;
+        let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = require(importFile);
+        if (!geojson || !geojson.features || geojson.features.length === 0) return;
+        if (this.worldState.hasOwnProperty(key)) {
+            console.error(`Error importing ${importFile}: Key ${key} already exists!`);
+            return;
+        }
+        let importedFeatures: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject>} = {};
+        geojson.features.forEach(f => {
+            let key = (fileReference.referenceId && f.properties && f.properties.hasOwnProperty(fileReference.referenceId))
+                ? f.properties[fileReference.referenceId]
+                : f.id;
+            if (!key && f.properties) {
+                if (f.properties.hasOwnProperty['Name']) {
+                    key = f.properties['Name'];
+                } else if (f.properties.hasOwnProperty['name']) {
+                    key = f.properties['name'];
+                }
+            }
+            if (!key) {
+                console.error(`Error importing feature from ${importFile}: feature has no key (id, name or Name property)! Feature:\n ${JSON.stringify(f, null, 2)}`);
+                return;
+            }
+            if (importedFeatures.hasOwnProperty(key)) {
+                console.error(`Error importing feature from ${importFile}: Key ${key} already exitst! Feature:\n ${JSON.stringify(f, null, 2)}`);
+                return;
+            } else {
+                importedFeatures[key] = f;
+            }
+        });
+        this.worldState.imports[key] = importedFeatures;
     }
 }

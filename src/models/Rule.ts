@@ -1,9 +1,9 @@
 import {Utils} from '../helpers/utils';
-import {IFeature, IProperty, IGeoJsonFile} from '../models/Feature';
+import {IProperty} from '../models/Feature';
 import {WorldState} from './WorldState';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
 
-export interface IRestSource {
+export class RestSource {
     url: string;
     type: 'geojson';
     /** Refresh interval for the source in [seconds]. */
@@ -13,9 +13,24 @@ export interface IRestSource {
 /** Input file for rules */
 export interface IRuleFile {
     /** Key value pair pointing to additional files to load on import */
-    imports?: { [key: string]: string };
+    imports?: {
+        [key: string]: {
+            /**
+             * Relative path to the file.
+             *
+             * @type {string}
+             */
+            path: string,
+            /**
+             * If supplied, property name that should be used as unique key for the feature.
+             *
+             * @type {string}
+             */
+            referenceId?: string
+        }
+    };
     /** Subscribe to data sources */
-    subscribe?: { [key: string]: IRestSource };
+    subscribe?: { [key: string]: RestSource };
     /** List of rules */
     rules: { [ruleId: string]: IRule };
 }
@@ -75,7 +90,7 @@ export class Rule implements IRule {
     /** How many times can the rule be fired: -1 is indefinetely, default is once */
     recurrence: number = 1;
     featureId: string;
-    feature: IFeature;
+    feature: GeoJSON.Feature<GeoJSON.GeometryObject>;
     /**
      * (Set of) condition(s) that need to be fulfilled in order to process the actions.
      * In case the condition is empty, the rule is always fired, on every process.
@@ -271,10 +286,10 @@ export class Rule implements IRule {
                                 console.log('Add feature ' + feature.id);
                                 if (!feature.properties.hasOwnProperty('date')) feature.properties['date'] = new Date();
                                 if (!feature.properties.hasOwnProperty('roles')) feature.properties['roles'] = ['rti'];
-                                service.addFeature(feature)
-                            }
+                                service.addFeature(feature);
+                            };
                         } (this.feature, length > 1 ? <string>a[1] : '', service), this.getDelay(a, length - 1));
-                        console.log(`Timer ${id}: Add feature ${this.isGenericRule ? a[1] : this.feature.id}`)
+                        console.log(`Timer ${id}: Add feature ${this.isGenericRule ? a[1] : this.feature.id}`);
                         break;
                     case 'answer':
                     case 'set':
@@ -307,9 +322,9 @@ export class Rule implements IRule {
                                         f.properties[k].push(v);
                                     }
                                     updateProperty(f, service, k, f.properties[k]);
-                                }
+                                };
                             } (this.feature, key2, valp, service, this.updateProperty), this.getDelay(a, 3));
-                            console.log(`Timer ${id}: push ${key2}: ${valp}`)
+                            console.log(`Timer ${id}: push ${key2}: ${valp}`);
                         }
                         break;
                 }
@@ -325,9 +340,9 @@ export class Rule implements IRule {
                 console.log(`Feature ${f.id}: ${k} = ${v}`);
                 f.properties[k] = v;
                 updateProperty(f, service, k, f.properties[key], isAnswer);
-            }
+            };
         } (this.feature, key, value, service, this.updateProperty), delay);
-        console.log(`Timer ${id}: ${key} = ${value}`)
+        console.log(`Timer ${id}: ${key} = ${value}`);
     }
 
     // private static updateLog(f: IFeature, logs: { [prop: string]: IPropertyUpdate[] }, key: string, now: number, value: string | number | boolean) {
@@ -341,7 +356,7 @@ export class Rule implements IRule {
         // if (logs) logs[key] = f.logs[key];
     // }
 
-    private updateProperty(f: IFeature, service: IRuleEngineService, key: string, value: any, isAnswer = false) {
+    private updateProperty(f: GeoJSON.Feature<GeoJSON.GeometryObject>, service: IRuleEngineService, key: string, value: any, isAnswer = false) {
         // var now = service.timer.now();
         // if (!f.hasOwnProperty('logs')) f.logs = {};
         // var logs: { [prop: string]: DynamicLayer.IPropertyUpdate[] } = {};

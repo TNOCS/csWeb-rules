@@ -1,30 +1,51 @@
 import * as turf from 'turf';
-import {IFeature, IGeoJsonFile} from '../models/Feature';
 
 export class GeoExtenions {
-    static getBoundingBox(features: IFeature[]) {
-    var bounds: any = {}, coords, point, latitude, longitude;
+    /**
+     * Return the bounding box envelope of all features
+     *
+     * @static
+     * @param {IFeature[]} features
+     * @returns Feature<Polygon>: a rectangular Polygon feature that encompasses all vertices
+     */
+    static getBoundingBox(features: GeoJSON.Feature<GeoJSON.GeometryObject>[]) {
+        let fc: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = {
+            type: 'FeatureCollection',
+            features: features
+        };
+        return turf.envelope(fc);
+    }
 
-    // // Loop through each “feature”
-    // for (var i = 0; i < features.length; i++) {
-    //     // get bound
-    //     if (!features[i].hasOwnProperty('geometry')) continue;
-    //     var b = d3.geo.bounds(features[i]);
-    //     // Update the bounds recursively by comparing the current
-    //     // xMin/xMax and yMin/yMax with the coordinate
-    //     // we're currently checking
-    //     bounds.xMin = bounds.xMin < b[0][0] ? bounds.xMin : b[0][0];
-    //     bounds.xMax = bounds.xMax > b[1][0] ? bounds.xMax : b[1][0];
-    //     bounds.yMin = bounds.yMin < b[0][1] ? bounds.yMin : b[0][1];
-    //     bounds.yMax = bounds.yMax > b[1][1] ? bounds.yMax : b[1][1];
-    // }
-    // bounds.southWest = [bounds.yMin, bounds.xMin];
-    // bounds.northEast = [bounds.yMax, bounds.xMax];
+    /**
+     * Returns whether the feature is inside or not.
+     *
+     * @static
+     * @param {GeoJSON.Feature<GeoJSON.Point>} feature
+     * @param {GeoJSON.Feature<GeoJSON.Polygon>} boundary
+     * @returns boolean
+     */
+    static isInside(feature: GeoJSON.Feature<GeoJSON.Point>, boundary: GeoJSON.Feature<GeoJSON.Polygon>) {
+        return turf.inside(feature, boundary);
+    }
 
-    // // Returns an object that contains the bounds of this GeoJSON
-    // // data. The keys of this object describe a box formed by the
-    // // northwest (xMin, yMin) and southeast (xMax, yMax) coordinates.
-    return bounds;
-}
+    /**
+     * Return all the points inside a (multi-)polygon boundary.
+     * NOTE: Non point features are ignored.
+     *
+     * @static
+     * @param {IFeature[]} features
+     * @param {IFeature} boundary
+     * @returns all the Point Features inside the boundary.
+      */
+    static inside(features: GeoJSON.Feature<GeoJSON.GeometryObject>[], boundary: GeoJSON.Feature<GeoJSON.Polygon>) {
+        let insideFeatures: GeoJSON.Feature<GeoJSON.Point>[] = [];
+
+        features.forEach(f => {
+            if (f.type !== 'Point') return;
+            let pointFeature: GeoJSON.Feature<GeoJSON.Point> = <GeoJSON.Feature<GeoJSON.Point>>f;
+            if (turf.inside(pointFeature, boundary)) insideFeatures.push(pointFeature);
+        });
+        return insideFeatures;
+    }
 
 }

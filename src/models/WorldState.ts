@@ -1,4 +1,4 @@
-import {IFeature, IProperty, IGeoJsonFile} from '../models/Feature';
+import {IProperty} from '../models/Feature';
 
 /**
  * A class representing the world state
@@ -11,14 +11,14 @@ export class WorldState {
     /** A bag of key-value properties */
     properties: IProperty[] = [];
     /** List of all features */
-    features: IFeature[] = [];
+    features: GeoJSON.Feature<GeoJSON.GeometryObject>[] = [];
     /** Imported features, e.g. namespaces */
-    imports: { [key: string]: IFeature[] } = {};
+    imports: { [key: string]: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject>} } = {};
     /**
      * Active feature.
      * In case it is undefined, you can only evaluate the non-feature specific rules.
      */
-    activeFeature: IFeature;
+    activeFeature: GeoJSON.Feature<GeoJSON.GeometryObject>;
     /**
      * Active layer id is used for working with features.
      * TODO I assume that later, we need to make this more flexible, allowing you to specify

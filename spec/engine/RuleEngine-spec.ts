@@ -1,9 +1,9 @@
 import {RuleEngine} from '../../src/engine/RuleEngine';
 
-describe('The rule engine', function() {
+describe('The rule engine', () => {
     var ruleEngine: RuleEngine;
 
-    beforeEach((done) => {
+    beforeEach(done => {
         ruleEngine = new RuleEngine(done, '../../../spec/engine/ruleConfig.json');
     });
 
