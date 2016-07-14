@@ -1,4 +1,4 @@
-import {ISourceConnector, BaseSourceConnector} from './Connector';
+import {ISourceConnector, BaseSourceConnector} from './SourceConnector';
 import * as restler from 'restler';
 
 export class RestConnector extends BaseSourceConnector {
@@ -15,11 +15,11 @@ export class RestConnector extends BaseSourceConnector {
         super();
     }
 
-    connect(callback: (result: any) => {}) {
+    connect(callback: (result: any) => void) {
         this.refresh(callback);
     }
 
-    private refresh(callback: (result: any) => {}) {
+    private refresh(callback: (result: any) => void) {
         restler.get(this.url).on('complete', result => {
             if (result instanceof Error) {
                 this.hasError = true;

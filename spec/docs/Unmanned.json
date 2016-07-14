@@ -4,14 +4,14 @@
         "vehicles": "vehicles.json",
         "locations": "locations.json"
     },
-    "subscribe": {
+    "subscriptions": {
         "tracks": {
+            "sourceType": "REST",
             "url": "http://127.0.0.1:8000",
-            "type": "geojson",
-            "refreshInterval": 1
+            "refreshInterval": 5
         }
     },
-    "publish": {
+    "publications": {
         "imb": {
             "type": "imb"
         }
@@ -25,7 +25,7 @@
             "conditions": [{
                 "property": "type",
                 "method": "=",
-                "value": "car"
+                "parameter": "car"
             }, {
                 "property": "sirene",
                 "method": "exists"
@@ -35,29 +35,29 @@
             }, {
                 "property": "speed",
                 "method": ">=",
-                "value": 80
+                "parameter": 80
             }, {
                 "property": "$location",
                 "method": "insideBoundary", // outsideBoundary
-                "value": "areas.boundary1"
+                "parameter": "areas.boundary1"
             }],
             "actions": [{
                 "method": "activate", // loadScript
-                "parameter": "otherRule",
+                "property": "otherRule",
                 "delay": 30
             }, {
                 "method": "set",
                 "property": "lightsOn",
-                "value": true,
+                "parameter": true,
                 "delay": 30
             }, {
-                "parameter": "lightsOn",
+                "property": "lightsOn",
                 "method": "=",
-                "value": true,
+                "parameter": true,
                 "delay": 30
             }, {
                 "method": "zoomTo",
-                "property": "$location",
+                "parameter": "$location",
                 "delay": 5
             }, {
                 "method": "addFeature",
@@ -69,6 +69,9 @@
                 "method": "popup",
                 "parameter": "Take action",
                 "delay": 5
+            }, {
+                "method": "activateRule",
+                "parameter": "myRuleId"
             }, {
                 "activateRule": {
                     "ruleId": "myRule",

@@ -2,13 +2,7 @@ import {Utils} from '../helpers/utils';
 import {IProperty} from '../models/Feature';
 import {WorldState} from './WorldState';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
-
-export class RestSource {
-    url: string;
-    type: 'geojson';
-    /** Refresh interval for the source in [seconds]. */
-    refreshInterval: number;
-}
+import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
 
 /** Input file for rules */
 export interface IRuleFile {
@@ -30,7 +24,7 @@ export interface IRuleFile {
         }
     };
     /** Subscribe to data sources */
-    subscribe?: { [key: string]: RestSource };
+    subscriptions?: { [key: string]: ISourceConnectorConfig };
     /** List of rules */
     rules: { [ruleId: string]: IRule };
 }
@@ -138,6 +132,7 @@ export class Rule implements IRule {
 
     /** Evaluate the conditions and check whether all of them are true (AND). */
     private evaluateConditions(worldState: WorldState) {
+        if (typeof worldState.activeFeature === 'undefined') return false;
         for (let i = 0; i < this.conditions.length; i++) {
             var c = this.conditions[i];
             var check = c[0];
@@ -146,7 +141,6 @@ export class Rule implements IRule {
                 var prop: string | number | boolean;
                 switch (check.toLowerCase()) {
                     case 'propertyexists':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 2) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -155,7 +149,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertyisset':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length < 2) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -167,7 +160,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertygreaterorequalthan':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -178,7 +170,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertygreaterthan':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -189,7 +180,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertyequals':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -201,7 +191,6 @@ export class Rule implements IRule {
                         break;
                     case 'propertydoesnotequal':
                     case 'propertynotequal':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -212,7 +201,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertylessthan':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -223,7 +211,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertylessorequalthan':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {
@@ -234,7 +221,6 @@ export class Rule implements IRule {
                         }
                         break;
                     case 'propertycontains':
-                        if (typeof worldState.activeFeature === 'undefined') return false;
                         if (length !== 3) return this.showWarning(c);
                         prop = c[1];
                         if (typeof prop === 'string') {

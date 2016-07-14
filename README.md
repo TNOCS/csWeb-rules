@@ -2,15 +2,34 @@
 
 A rule or scenario engine for csWeb which uses a Domain Specific Language (DSL) for specifying the rules. It can also be used standalone, allowing you to implement your own DSL.
 
+# Installation
+
+```shell
+npm i
+```
+NOTE: in order to build some of the dependencies on Windows, I had to:
+- Add the python27 folder to my PATH environment
+```shell
+SET PATH=%PATH%;c:\python27
+```
+- Specify npm to use the C++ compiler (CL) of VS2015
+```shell
+npm config set msvs_version 2015 --global
+```
+- Set a specific property for the CL:
+```shell
+SET CL=-DDELAYIMP_INSECURE_WRITABLE_HOOKS
+```
+
 ## Motivation
-In several of my projects, I had a need for either a simple to use rule engine that would react with actions when certain conditions are met. 
+In several of my projects, I had a need for either a simple to use rule engine that would react with actions when certain conditions are met.
 Typical use cases are:
 1. For the Real Time Intelligence project (for the National Police), we need to provide suggestions to the user like hypotheses and actions.
 2. For Concept Development & Experimentation, we user must be presented with a (command & control) scenario in order to test new user interfaces.
 3. For crisis management training, we need to script the training scenario (the incident) as well as the external, non-present parties.
 4. For chain effect analysis, e.g. we want to script the behaviour of a plant in response to an external event.
 
-For example, when a feature was placed on the map, I needed to suggest a number of actions that could be taken. More generically, I needed to run a scenario, moving features over a map, sending an email or SMS after some time, or as an automatic response to some input, or starting a simulation or analysis run. However, specifying such a scenario often requires many meetings with the end user. So wouldn't it be better if he could specify the scenario himself? 
+For example, when a feature was placed on the map, I needed to suggest a number of actions that could be taken. More generically, I needed to run a scenario, moving features over a map, sending an email or SMS after some time, or as an automatic response to some input, or starting a simulation or analysis run. However, specifying such a scenario often requires many meetings with the end user. So wouldn't it be better if he could specify the scenario himself?
 
 My first effort used Windows Workflow Foundation, a workflow engine from Microsoft, in which you can design your own flow elements in C# or Visual Basic. Is has innate support for branching and conditionals, uses drag-n-drop, so you can create a workflow easily. Although easy to use, it was quite cumbersome to edit (for example, an email), and it was difficult to get a good overview of the complete flow. Especially branching made it difficult to see what was going to happen, and getting a good understanding of what would happen in parallel was difficult too.
 
@@ -41,7 +60,7 @@ Send email emails.hello from users.alice to users.bob, users.carol
 ### Examples
 ```javascript
 // Import an external JSON file with user details, emails, assets or positions
-import users  = require('users.json')   
+import users  = require('users.json')
 import emails = require('emails.json')
 import assets = require('assets.json')
 import geo 	  = require('positions.geojson')
@@ -55,7 +74,7 @@ After 00:00:05                          // After a delay of 5 seconds
 // Also to distinguish between generic rules (default) and feature-specific rules
 Select layers.layerID                   // Make the layerID layer active, so subsequent rules apply to it.
 Select users.alice                      // Make the user Alice the active user
-Select MY_FEATURE_ID					// Only apply the following to item with ID === MY_FEATURE_ID 
+Select MY_FEATURE_ID					// Only apply the following to item with ID === MY_FEATURE_ID
 Unselect								// Reset current selection
 
 // Conditions (by default, applies to properties, so instead of using property speed, just use speed.
@@ -65,7 +84,7 @@ If speed >= 80 and vehicle_type == 'my_vehicle_type' then ...
 // Allow string and array checks, i.e. indexOf >= 0
 If role contains 'my_role' then ...
 // ID is a special property, that is not a property
-If id == my_id then ... 
+If id == my_id then ...
 // Also treat the geometry separately
 If in areas.MY_BOUNDING_BOX then ...
 
@@ -76,7 +95,7 @@ If in areas.MY_BOUNDING_BOX then ...
 // Publish and subscribe to messages
 
 // Set property
-In assets.car set property speed = '30 km/h', sireneOn = true 
+In assets.car set property speed = '30 km/h', sireneOn = true
 Set property isVisible = true,          // Stll applies to assets.car. It is further assumed there is an active layer, e.g. it was preceded by a Select layers.layerID
 
 // Send rules
@@ -117,5 +136,5 @@ is represented as
 }
 
 ### TODO
-Implement the scenario engine, which transforms the sequence of messages to code. 
+Implement the scenario engine, which transforms the sequence of messages to code.
 An editor that facilitates editing scenarios.

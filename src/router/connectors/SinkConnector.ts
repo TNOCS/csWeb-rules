@@ -1,7 +1,16 @@
 import {IBoundingBox} from '../../helpers/Utils';
 import {GeoExtenions} from '../../helpers/GeoExtensions';
 
-export interface ISourceConnector {
+export interface ISinkConnectorConfig {
+    id?: number;
+    type: string;
+    host?: string;
+    port?: number;
+    name?: string;
+    [key: string]: any;
+}
+
+export interface ISinkConnector {
     /**
      * True in case of an error.
      *
@@ -17,21 +26,6 @@ export interface ISourceConnector {
     errorStatus: string;
 
     /**
-     * Return all features.
-     *
-     * @returns {IFeature[]}
-     */
-    getFeatures(): GeoJSON.Feature<GeoJSON.GeometryObject>[];
-
-    /**
-     * Return all point features within the bounding box.
-     *
-     * @param {IFeature} boundary
-     * @returns IFeature[]
-     */
-    getFeaturesInBoundingBox(boundary: GeoJSON.Feature<GeoJSON.Polygon>): GeoJSON.Feature<GeoJSON.GeometryObject>[];
-
-    /**
      * Connect to the source, and call the callback when new data is available.
      *
      * @param {Function} callback
@@ -39,7 +33,7 @@ export interface ISourceConnector {
     connect(callback: (result: any) => void);
 }
 
-export class BaseSourceConnector implements ISourceConnector {
+export class BaseSinkConnector implements ISinkConnector {
     private features: GeoJSON.Feature<GeoJSON.GeometryObject>[] = [];
 
     /**
@@ -55,23 +49,6 @@ export class BaseSourceConnector implements ISourceConnector {
      * @type {string}
      */
     errorStatus: string;
-
-    /**
-     * Return all features.
-     *
-     * @returns {IFeature[]}
-     */
-    getFeatures() { return this.features; }
-
-    /**
-     * Return all features within the bounding box.
-     *
-     * @param {IFeature} boundary
-     * @returns IFeature[]
-     */
-    getFeaturesInBoundingBox(boundary: GeoJSON.Feature<GeoJSON.Polygon>) {
-        return GeoExtenions.inside(this.features, boundary);
-    }
 
     /**
      * Connect to the source, and call the callback when new data is available.

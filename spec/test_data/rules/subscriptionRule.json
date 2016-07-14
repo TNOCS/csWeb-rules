@@ -1,0 +1,9 @@
+{
+    "subscriptions": {
+        "google": {
+            "type": "REST",
+            "host": "http://www.google.nl",
+            "refreshInterval": -1
+        }
+    }
+}

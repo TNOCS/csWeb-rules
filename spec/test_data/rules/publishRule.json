@@ -1,0 +1,11 @@
+{
+    "publish": {
+        "imb": {
+            "id": 1234,
+            "type": "IMB",
+            "host": "imb.lohman-solutions.com",
+            "port": 4000,
+            "name": "Test"
+        }
+    }
+}

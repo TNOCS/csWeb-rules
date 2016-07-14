@@ -18,7 +18,7 @@ describe('The rule engine', () => {
     });
 
     it('should be able to load a rule file.', (done) => {
-        expect(ruleEngine.loadedRuleFiles.indexOf('rule1.json')).toBeGreaterThan(-1);
+        expect(ruleEngine.loadedRuleFiles.indexOf('importRule.json')).toBeGreaterThan(-1);
         done();
     });
 

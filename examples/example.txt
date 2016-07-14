@@ -58,11 +58,11 @@ Upon receipt of event.message1 or/and event.message2 {
 // Whitespace is optional.
 // Comma's and dots (at the end of a line - not as identifier) are optional (ignored in the output stream).
 // Case is ignored, except for identifiers (i.e. users.Erik !== users.erik but move === Move).
-// Assets, users, paths and locations are specified as JSON objects in their own files, not in script files. 
-// Assets and users are based on an extendable schema, i.e. they do have predefined (optional) properties, 
+// Assets, users, paths and locations are specified as JSON objects in their own files, not in script files.
+// Assets and users are based on an extendable schema, i.e. they do have predefined (optional) properties,
 // e.g. users may have a firstname, lastname, email, mobile, phone, homeAddress, workAddress, and location as well as other
-// properties like job title, organisation, personal email, spouse, fax, userId. 
+// properties like job title, organisation, personal email, spouse, fax, userId.
 // { and } denote the beginning and end of a block.
 // The identifiers always take the form of namespace.objectName.
 // You can only import a JSON file (with an object, i.e. the JSON file should start with a { and end with }).
-// You can include a script file: the content of the included script file is merged with the parent file. 
+// You can include a script file: the content of the included script file is merged with the parent file.
