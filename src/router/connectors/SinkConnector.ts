@@ -7,6 +7,7 @@ export interface ISinkConnectorConfig {
     host?: string;
     port?: number;
     name?: string;
+    data?: Object;
     [key: string]: any;
 }
 
@@ -31,6 +32,13 @@ export interface ISinkConnector {
      * @param {Function} callback
      */
     connect(callback: (result: any) => void);
+    /**
+     * Publish a message to the topic.
+     *
+     * @param {string} topic
+     * @param {Object} msg
+     */
+    publish(topic: string, msg: Object);
 }
 
 export class BaseSinkConnector implements ISinkConnector {
@@ -56,4 +64,6 @@ export class BaseSinkConnector implements ISinkConnector {
      * @param {Function} callback
      */
     connect(callback: (result: any) => void) { return; }
+
+    publish(topic: string, msg: Object) { return; }
 }

@@ -261,7 +261,7 @@ exports.TIMBConnection = function()
 				var streamID = aEventPayload.readInt32LE(0);
 				var streamNameSize = aEventPayload.readInt32LE(4);
 				var streamName = aEventPayload.toString("utf8",8,8+streamNameSize);
-				
+
 				var streamStream = eventDefinition.onStreamCreate(eventDefinition, streamName);
 				if (streamStream!=null)
 					eventDefinition.streamDefinitions[streamID.toString()] = { ID: streamID, Name: streamName, stream: streamStream };
@@ -301,12 +301,12 @@ exports.TIMBConnection = function()
 			break;
 		}
 	}
-	
+
 	function handleEndSession()
 	{
 		// todo: handle end of session received from hub
 	}
-	
+
 	function handleCommand(aCommand, aPayload)
 	{
 		var rxEventID;
@@ -353,15 +353,15 @@ exports.TIMBConnection = function()
 				{
 					fEventTranslations[i] = -1;
 				}
-				
+
 			}
 			fEventTranslations[txEventID] = rxEventID;
 			break;
 		}
 	}
-	
+
 	var fBuffer = new Buffer(0);
-	
+
 	function onReadCommand(aNewData)
 	{
 		fBuffer = Buffer.concat([fBuffer, aNewData], fBuffer.length+aNewData.length);
@@ -426,12 +426,12 @@ exports.TIMBConnection = function()
 			}
 		}
 	}
-	
+
 	function onDisconnect()
 	{
 		// todo:
 	}
-	
+
 	function EventDefinition(aEventID, aEventName)
 	{
 		// define event
@@ -453,7 +453,7 @@ exports.TIMBConnection = function()
 			}
 			signalChangeObject(fSocket, this.id, aAction, aObjectID, aAttribute);
 		};
-		
+
 		this./*prototype.*/normalEvent = function(aEventKind, aEventPayload)
 		{
 			if (!this.published)
@@ -463,7 +463,7 @@ exports.TIMBConnection = function()
 			}
 			signalNormalEvent(fSocket, this.id, aEventKind, aEventPayload);
 		};
-		
+
 		this.stream = function(aStreamName, aStream)
 		{
 			if (!this.published)
@@ -474,7 +474,7 @@ exports.TIMBConnection = function()
 			signalStream(fSocket, this.id, aStreamName, aStream);
 		}
 	}
-	
+
 	function addOrSetEvent(aEventName)
 	{
 		var eventID = fEventNames.indexOf(aEventName);
@@ -490,7 +490,7 @@ exports.TIMBConnection = function()
 		}
 		return eventID;
 	}
-	
+
 	this.connect = function (aRemoteHost, aRemotePort, aOwnerID, aOwnerName, aFederation)
 	{
 		fFederation = aFederation;

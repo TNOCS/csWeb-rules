@@ -3,7 +3,9 @@ import path = require('path');
 import HyperTimer = require('hypertimer');
 import {Rule, IRule, IRuleFile} from '../models/Rule';
 import {WorldState}             from '../models/WorldState';
-import {RuleEngineConfig}       from './RuleEngineConfig';
+import {IRuleEngineConfig}      from './RuleEngineConfig';
+import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
+import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
 import {Router}                 from '../router/Router';
 
 export interface IRuleEngineService {
@@ -33,12 +35,12 @@ export interface IRuleEngineService {
      */
     deactivateRule?: (ruleId: string) => void;
     timer?: HyperTimer;
+    router?: Router;
 }
 
 export class RuleEngine {
     loadedRuleFiles: string[] = [];
     isInitialised = false;
-    config: RuleEngineConfig = new RuleEngineConfig();
     router: Router = new Router();
     /** A set of rules. */
     private rules: IRule[] = [];
@@ -62,14 +64,9 @@ export class RuleEngine {
      * @param {Function} done
      * @param {string} [ruleConfigFile='ruleConfig.json']
      */
-    constructor(private done: Function, ruleConfigFile: string = 'ruleConfig.json') {
-        let ruleConfigFileAbs = path.isAbsolute(ruleConfigFile) ? ruleConfigFile : path.join(__dirname, ruleConfigFile);
-        if (fs.existsSync(ruleConfigFileAbs)) {
-            var configFile: RuleEngineConfig = require(ruleConfigFileAbs);
-            this.config = new RuleEngineConfig(configFile);
-        }
+    constructor(private done: Function, public config: IRuleEngineConfig) {
         if (this.config.rulesFolder) {
-            if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(path.dirname(ruleConfigFileAbs), this.config.rulesFolder);
+            if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);
             this.loadRuleFiles(this.config.rulesFolder);
         }
         // this.service.updateFeature = (feature: Feature) => manager.updateFeature(layerId, feature, {}, () => {});
@@ -78,15 +75,15 @@ export class RuleEngine {
         //     [key: string]: Api.Log[];
         // }) => manager.updateLogs(layerId, featureId, logs, {}, () => {});
         // this.service.layer = this.layer;
-        this.service.activateRule   = (ruleId: string) => this.activateRule(ruleId);
+        this.service.activateRule = (ruleId: string) => this.activateRule(ruleId);
         this.service.deactivateRule = (ruleId: string) => this.deactivateRule(ruleId);
         this.service.timer = new HyperTimer();
+        this.service.router = this.router;
     }
 
     private loadRuleFiles(rulesFolder: string) {
         if (!fs.existsSync(rulesFolder)) {
-            this.done();
-            return;
+            return this.done();
         };
         fs.readdir(rulesFolder, (err, files) => {
             if (err) {
@@ -103,6 +100,7 @@ export class RuleEngine {
                 }
             });
             this.isInitialised = true;
+            this.evaluateRules();
             this.done();
         });
     }
@@ -117,18 +115,35 @@ export class RuleEngine {
                 this.importGeoJSON(key, folder, importFileReference);
             }
         }
-        if (ruleFile.subscriptions) {
-            let subscriptions = ruleFile.subscriptions;
-            for (let key in subscriptions) {
-                if (!subscriptions.hasOwnProperty(key)) continue;
-                let config = subscriptions[key];
-                this.router.subscribe(key, config);
-                this.router.on(`update_${key}`, result => {
-                    let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = <GeoJSON.FeatureCollection<GeoJSON.GeometryObject>>result;
-                    if (!geojson || geojson.type !== 'FeatureCollection' || !geojson.features) return;
-                    geojson.features.forEach(f => this.evaluateRules(f));
-                });
-            }
+        if (ruleFile.subscribers) {
+            this.subscribeSources(ruleFile.subscribers);
+        }
+        if (ruleFile.publishers) {
+            this.subscribeSinks(ruleFile.publishers);
+        }
+        if (ruleFile.rules) {
+            this.rules = ruleFile.rules.map(r => new Rule(r));
+        }
+    }
+
+    private subscribeSinks(publishers: { [key: string]: ISinkConnectorConfig }) {
+        for (let key in publishers) {
+            if (!publishers.hasOwnProperty(key)) continue;
+            let config = publishers[key];
+            this.router.addPublisher(key, config);
+        }
+    }
+
+    private subscribeSources(subscriptions: { [key: string]: ISourceConnectorConfig }) {
+        for (let key in subscriptions) {
+            if (!subscriptions.hasOwnProperty(key)) continue;
+            let config = subscriptions[key];
+            this.router.addSubscription(key, config);
+            this.router.on(`update_${key}`, result => {
+                let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = <GeoJSON.FeatureCollection<GeoJSON.GeometryObject>>result;
+                if (!geojson || geojson.type !== 'FeatureCollection' || !geojson.features) return;
+                geojson.features.forEach(f => this.evaluateRules(f));
+            });
         }
     }
 
@@ -162,7 +177,7 @@ export class RuleEngine {
         }
     }
 
-    private importGeoJSON(key: string, folder: string, fileReference: { path: string, referenceId?: string}) {
+    private importGeoJSON(key: string, folder: string, fileReference: { path: string, referenceId?: string }) {
         let importFile = path.isAbsolute(fileReference.path) ? fileReference.path : path.join(folder, fileReference.path);
         if (!fs.existsSync(importFile)) return;
         let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = require(importFile);
@@ -171,7 +186,7 @@ export class RuleEngine {
             console.error(`Error importing ${importFile}: Key ${key} already exists!`);
             return;
         }
-        let importedFeatures: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject>} = {};
+        let importedFeatures: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject> } = {};
         geojson.features.forEach(f => {
             let key = (fileReference.referenceId && f.properties && f.properties.hasOwnProperty(fileReference.referenceId))
                 ? f.properties[fileReference.referenceId]
@@ -205,8 +220,8 @@ export class RuleEngine {
         }
         this.isBusy = true;
         // Update the set of applicable rules
-        let activeRules   = this.rules.filter(r => r.isActive && r.recurrence > 0);
-        console.log(`Starting to evaluate ${activeRules.length} rules:`);
+        let activeRules = this.rules.filter(r => r.isActive && r.recurrence > 0);
+        if (activeRules.length) console.log(`Starting to evaluate ${activeRules.length} rules:`);
         // Process all rules
         this.worldState.activeFeature = feature;
         activeRules.forEach(r => r.process(this.worldState, this.service));
@@ -214,7 +229,7 @@ export class RuleEngine {
         if (this.featureQueue.length > 0) {
             this.evaluateRules(this.featureQueue.shift());
         } else {
-            console.log('Ready evaluating rules...');
+            //console.log('Ready evaluating rules...');
         }
     }
 

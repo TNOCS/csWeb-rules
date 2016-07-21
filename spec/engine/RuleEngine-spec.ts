@@ -1,14 +1,18 @@
 import {RuleEngine} from '../../src/engine/RuleEngine';
+import {RuleEngineConfig, IRuleEngineConfig} from '../../src/engine/RuleEngineConfig';
 
 describe('The rule engine', () => {
     var ruleEngine: RuleEngine;
+    const config: IRuleEngineConfig = {
+        rulesFolder: './spec/test_data/rules'
+    };
 
     beforeEach(done => {
-        ruleEngine = new RuleEngine(done, '../../../spec/engine/ruleConfig.json');
+        ruleEngine = new RuleEngine(done, config);
     });
 
     it('should use a default folder for rules.', (done) => {
-        let re = new RuleEngine(done);
+        let re = new RuleEngine(done, new RuleEngineConfig());
         expect(re.config.rulesFolder).toContain('rules');
     });
 

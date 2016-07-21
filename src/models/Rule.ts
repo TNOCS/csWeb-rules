@@ -3,6 +3,7 @@ import {IProperty} from '../models/Feature';
 import {WorldState} from './WorldState';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
 import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
+import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
 
 /** Input file for rules */
 export interface IRuleFile {
@@ -24,9 +25,17 @@ export interface IRuleFile {
         }
     };
     /** Subscribe to data sources */
-    subscriptions?: { [key: string]: ISourceConnectorConfig };
+    subscribers?: { [key: string]: ISourceConnectorConfig };
+    /** List of Publishers to send messages to. */
+    publishers?: { [key: string]: ISinkConnectorConfig };
     /** List of rules */
-    rules: { [ruleId: string]: IRule };
+    rules: IRule[];
+}
+
+export interface IAction {
+    method: string;
+    property: Object;
+    delay: number;
 }
 
 /** Specifies a single rule */
@@ -61,7 +70,7 @@ export interface IRule {
      */
     conditions?: [[string | number | boolean]];
     /** Set of actions that will be executed when */
-    actions?: [[string | number | boolean]];
+    actions?: IAction[];
     /** Evaluate the rule and execute all actions, is applicable. */
     process?: (worldState: WorldState, service: IRuleEngineService) => void;
 }
@@ -91,7 +100,7 @@ export class Rule implements IRule {
      */
     conditions: [[string | number | boolean]];
     /** Set of actions that will be executed when */
-    actions: [[string | number | boolean]];
+    actions: IAction[];
 
     /** Create a new rule. */
     constructor(rule: IRule, activationTime?: Date) {
@@ -122,7 +131,7 @@ export class Rule implements IRule {
         // Check if we are dealing with a rule that belongs to a feature, and that feature is being processed.
         if (!this.isGenericRule && typeof worldState.activeFeature !== 'undefined' && typeof this.feature !== 'undefined' && worldState.activeFeature.id !== this.feature.id) return;
         // Finally, check the conditions, if any (if none, just go ahead and execute the actions)
-        if (typeof this.conditions === 'undefined' || this.evaluateConditions(worldState)) {
+        if (typeof this.conditions === 'undefined' || this.conditions.length === 0 || this.evaluateConditions(worldState)) {
             console.log('Start executing actions...');
             this.executeActions(worldState, service);
             if (this.recurrence > 0) this.recurrence--;
@@ -251,11 +260,24 @@ export class Rule implements IRule {
         for (let i = 0; i < this.actions.length; i++) {
             var a = this.actions[i];
             console.log(`Executing action: ` + JSON.stringify(a, null, 2));
-            var action = a[0];
+            var action = a.method;
             var key: string | number | boolean;
             if (typeof action === 'string') {
-                var length = a.length;
                 switch (action.toLowerCase()) {
+                    case 'sendmessage':
+                        if (!a.property || !a.property.hasOwnProperty('topic') || !a.property.hasOwnProperty('msg') || !a.property.hasOwnProperty('publisher')) {
+                            console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
+                            break;
+                        }
+                        let publisher = service.router.publishers[a.property['publisher']];
+                        if (!publisher) {
+                            console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
+                            break;
+                        }
+                        let topic = a.property['topic'];
+                        let msg = a.property['msg'];
+                        publisher.publish(topic, typeof msg === `string` ? msg : JSON.stringify(msg));
+                        break;
                     case 'add':
                         // add feature
                         var id = service.timer.setTimeout(function(f, fid, service) {
@@ -274,7 +296,7 @@ export class Rule implements IRule {
                                 if (!feature.properties.hasOwnProperty('roles')) feature.properties['roles'] = ['rti'];
                                 service.addFeature(feature);
                             };
-                        } (this.feature, length > 1 ? <string>a[1] : '', service), this.getDelay(a, length - 1));
+                        } (this.feature, length > 1 ? <string>a[1] : '', service), this.getDelay(a));
                         console.log(`Timer ${id}: Add feature ${this.isGenericRule ? a[1] : this.feature.id}`);
                         break;
                     case 'answer':
@@ -285,9 +307,8 @@ export class Rule implements IRule {
                             console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
                             return;
                         }
-                        var key = a[1];
                         if (typeof key === 'string') {
-                            this.setTimerForProperty(service, key, a[2], this.getDelay(a, 3), action === 'answer');
+                            this.setTimerForProperty(service, key, a[2], this.getDelay(a), action === 'answer');
                         }
                         break;
                     case 'push':
@@ -309,7 +330,7 @@ export class Rule implements IRule {
                                     }
                                     updateProperty(f, service, k, f.properties[k]);
                                 };
-                            } (this.feature, key2, valp, service, this.updateProperty), this.getDelay(a, 3));
+                            } (this.feature, key2, valp, service, this.updateProperty), this.getDelay(a));
                             console.log(`Timer ${id}: push ${key2}: ${valp}`);
                         }
                         break;
@@ -367,11 +388,9 @@ export class Rule implements IRule {
     }
 
     /** Get the delay, if present, otherwise return 0 */
-    private getDelay(actions: [string | number | boolean], index: number) {
-        if (index >= actions.length) return 0;
-        var delay = actions[index];
-        return (typeof delay === 'number')
-            ? delay * 1000
+    private getDelay(action: IAction) {
+        return action.delay
+            ? +action.delay * 1000
             : 0;
     }
 }

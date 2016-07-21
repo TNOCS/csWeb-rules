@@ -16,14 +16,15 @@ export interface ImbChannel {
     normalEvent(eventKind: ImbEventKind, payload: Buffer);
     stream(streamName: string, stream: fs.ReadStream);
 
-    onNormalEvent(channel: ImbChannel, payload: Buffer);
-    onChangeObject(action, objectID, shortEventName: string, attributeName: string);
+    onNormalEvent: (channel: ImbChannel, payload: Buffer) => void;
+    onChangeObject: (action, objectID, shortEventName: string, attributeName: string) => void;
 }
 
 export interface ImbConnection {
     connect(host: string, port: number, ownerID: number, ownerName: string, federation: string);
     publish(topic: string, usePrefix: boolean): ImbChannel;
     subscribe(topic: string, usePrefix: boolean): ImbChannel;
+    disconnect();
 }
 
 export class ImbConnector implements ISinkConnector {
@@ -36,7 +37,12 @@ export class ImbConnector implements ISinkConnector {
 
     constructor(private config: ISinkConnectorConfig) {}
 
-    connect() {
+    /**
+     * Connects to the IMB bus.
+     *
+     * @param {Function} [callback] Optional callback function, invoked when ready.
+     */
+    connect(cb?: Function) {
         this.imbConnection = new imb.TIMBConnection();
         this.imbConnection.connect(
             this.config.host || 'http://localhost',
@@ -46,11 +52,28 @@ export class ImbConnector implements ISinkConnector {
             this.config.hasOwnProperty('federation')
                 ? this.config['federation']
                 : 'federation');
+        if (cb) cb();
     }
 
-    private createChannel(topic: string) {
-        if (this.publishers.hasOwnProperty(topic)) return;
-        this.publishers[topic] = this.imbConnection.publish(topic, true);
+    /**
+     * Create a channel for publishing.
+     *
+     * @private
+     * @param {string} topic
+     * @returns
+     */
+    private createPublisher(topic: string) {
+        if (!this.publishers.hasOwnProperty(topic)) {
+            this.publishers[topic] = this.imbConnection.publish(topic, true);
+        }
+        return this.publishers[topic];
+    }
+
+    private createSubscriber(topic: string) {
+        if (!this.subscriptions.hasOwnProperty(topic)) {
+            this.subscriptions[topic] = this.imbConnection.subscribe(topic, true);
+        }
+        return this.subscriptions[topic];
     }
 
     /**
@@ -63,9 +86,15 @@ export class ImbConnector implements ISinkConnector {
         let pl: string = typeof payload === 'string'
             ? payload
             : JSON.stringify(payload);
-        if (typeof payload === 'string') pl = payload;
-        if (!this.publishers.hasOwnProperty(topic)) this.createChannel(topic);
-        let channel = this.publishers[topic];
+        let channel = this.createPublisher(topic);
         channel.normalEvent(ImbEventKind.Normal, new Buffer(pl));
+    }
+
+    subscribe(topic: string) {
+        return this.createSubscriber(topic);
+    }
+
+    close() {
+        this.imbConnection.disconnect();
     }
 }

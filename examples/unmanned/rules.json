@@ -1,0 +1,31 @@
+{
+    "publishers": {
+        "imb": {
+            "id": 5432,
+            "type": "IMB",
+            "host": "localhost",
+            "port": 4000,
+            "federation": "TNOdemo",
+            "name": "csWeb-rules"
+        }
+    },
+    "rules": [
+        {
+            "id": "fire test message",
+            "description": "Check the speed of a vehicle",
+            "recurrence": 10,
+            "isActive": true,
+            "conditions": [],
+            "actions": [
+                {
+                    "method": "sendMessage",
+                    "property": {
+                        "publisher": "imb",
+                        "topic": "test",
+                        "msg": "Hello world"
+                    }
+                }
+            ]
+        }
+    ]
+}

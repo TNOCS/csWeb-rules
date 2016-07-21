@@ -1,15 +1,20 @@
 import {ISourceConnectorConfig} from './connectors/SourceConnector';
+import {ISinkConnectorConfig, ISinkConnector}   from './connectors/SinkConnector';
 import {RestConnector}          from './connectors/RestConnector';
 import {EventEmitter}           from 'events';
+import {ImbConnector}           from './connectors/ImbConnector';
 
 export class Router extends EventEmitter {
-    subscriptions: { [key: string]: ISourceConnectorConfig } = {};
+    private subscriptions: { [key: string]: ISourceConnectorConfig } = {};
+    private publications:  { [key: string]: ISinkConnectorConfig } = {};
+
+    public publishers: { [key: string]: ISinkConnector} = {};
 
     constructor() {
         super();
     }
 
-    subscribe(subscription: string, config: ISourceConnectorConfig) {
+    addSubscription(subscription: string, config: ISourceConnectorConfig) {
         if (this.subscriptions.hasOwnProperty(subscription)) {
             console.error(`Error: already subscribed to ${subscription}!`);
             return;
@@ -26,6 +31,24 @@ export class Router extends EventEmitter {
                 break;
         }
         this.subscriptions[subscription] = config;
+    }
+
+    addPublisher(publisher: string, config: ISinkConnectorConfig) {
+        if (this.publications.hasOwnProperty(publisher)) {
+            console.error(`Error: already publishing to ${publisher}!`);
+            return;
+        }
+        switch (config.type.toLowerCase()) {
+            case 'imb':
+                let imbConnector = new ImbConnector(config);
+                imbConnector.connect();
+                this.publishers[publisher] = imbConnector;
+                break;
+            default:
+                console.error(`Error: cannot publish to ${publisher}. ${config.type} unknown!`);
+                break;
+        }
+        this.publications[publisher] = config;
     }
 
 }
