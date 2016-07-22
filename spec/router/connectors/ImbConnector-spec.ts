@@ -21,12 +21,12 @@ describe('The IMB connector', () => {
         imb.close();
     });
 
-    it('should be able to connect to a bus', done => {
+    xit('should be able to connect to a bus', done => {
         imb.connect(done);
         expect(imb.hasError).toBeFalsy;
     });
 
-    it('should be able to publish a message', () => {
+    xit('should be able to publish a message', () => {
         imb.connect();
         let topic = 'testing_rule_engine';
         imb.publish(topic, 'this is my 1st test');
@@ -40,7 +40,7 @@ describe('The IMB connector', () => {
     //   }, 2000);
     // });
 
-    it('should be able to receive a published message', done => {
+    xit('should be able to receive a published message', done => {
         imb.connect();
         testConnectionSettings.id = 3456;
         testConnectionSettings.name = 'subscriber';

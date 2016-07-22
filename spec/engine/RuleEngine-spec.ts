@@ -11,9 +11,8 @@ describe('The rule engine', () => {
         ruleEngine = new RuleEngine(done, config);
     });
 
-    it('should use a default folder for rules.', (done) => {
-        let re = new RuleEngine(done, new RuleEngineConfig());
-        expect(re.config.rulesFolder).toContain('rules');
+    it('should throw an error when the rules folder does not exist.', () => {
+        expect(() => { return new RuleEngineConfig(); }).toThrowError();
     });
 
     it('should load a config file.', (done) => {

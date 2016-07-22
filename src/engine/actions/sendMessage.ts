@@ -1,6 +1,6 @@
 import {WorldState}                     from '../../models/WorldState';
 import {IAction, ActionHelper}          from '../../models/Action';
-import { Utils }                        from '../../helpers/Utils';
+import {Utils}                          from '../../helpers/Utils';
 import {RuleEngine, IRuleEngineService} from '../../engine/RuleEngine';
 
 export interface ISendMessageData extends IAction {

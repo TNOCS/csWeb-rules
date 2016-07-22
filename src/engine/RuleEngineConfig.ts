@@ -23,13 +23,9 @@ export class RuleEngineConfig implements IRuleEngineConfig {
     const defaultConditionsFolder = 'conditions';
 
     this.rulesFolder = this.createFolderPath(defaultRulesFolder, config && config.rulesFolder);
+    console.warn(this.rulesFolder);
     this.actionsFolder = this.createFolderPath(defaultActionsFolder, config && config.actionsFolder);
     this.conditionsFolder = this.createFolderPath(defaultConditionsFolder, config && config.conditionsFolder);
-
-    if (!config) return;
-    if (config.rulesFolder) this.rulesFolder = config.rulesFolder;
-    if (config.simulationRate) this.simulationRate = config.simulationRate;
-    if (config.simulationStartTime) this.simulationStartTime = config.simulationStartTime;
   }
 
   private createFolderPath(defaultFolder: string, configFolder?: string) {

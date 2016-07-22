@@ -1,10 +1,10 @@
 import fs         = require('fs');
 import path       = require('path');
 import HyperTimer = require('hypertimer');
+import {IRuleEngineConfig, RuleEngineConfig} from './RuleEngineConfig';
 import {Rule, IRule, IRuleFile} from '../models/Rule';
 import {IAction, IActionPlugin} from '../models/Action';
 import {WorldState}             from '../models/WorldState';
-import {IRuleEngineConfig}      from './RuleEngineConfig';
 import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
 import {ISinkConnectorConfig}   from '../router/connectors/SinkConnector';
 import {Router}                 from '../router/Router';
@@ -73,6 +73,7 @@ export class RuleEngine {
    * @param {string} [ruleConfigFile='ruleConfig.json']
    */
   constructor(private done: Function, public config: IRuleEngineConfig) {
+    this.config = new RuleEngineConfig(config);
     this.loadConditionPlugins();
     this.loadActionPlugins();
 

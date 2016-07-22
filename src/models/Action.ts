@@ -15,12 +15,9 @@ export interface IActionPlugin {
 
 export interface IAction {
     method: string;
-    property?: Object;
+    property?: string | Object;
     delay?: number;
     run?: (worldState: WorldState) => void;
-}
-
-export interface IAction {
 }
 
 export class ActionHelper {
