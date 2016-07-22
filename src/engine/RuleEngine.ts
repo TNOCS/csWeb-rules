@@ -73,6 +73,7 @@ export class RuleEngine {
    * @param {string} [ruleConfigFile='ruleConfig.json']
    */
   constructor(private done: Function, public config: IRuleEngineConfig) {
+    this.loadConditionPlugins();
     this.loadActionPlugins();
 
     // this.service.updateFeature = (feature: Feature) => manager.updateFeature(layerId, feature, {}, () => {});
@@ -87,7 +88,7 @@ export class RuleEngine {
     this.service.router = this.router;
 
     if (this.config.rulesFolder) {
-      if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);
+      // if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);
       this.loadRuleFiles(this.config.rulesFolder);
     }
   }
@@ -98,14 +99,39 @@ export class RuleEngine {
    *
    * @private
    */
-  private loadActionPlugins() {
-    let actionFolder = path.join(__dirname, '../actions');
-    if (fs.existsSync(actionFolder)) {
-      let files = fs.readdirSync(actionFolder);
+  private loadConditionPlugins() {
+    // let actionFolder = path.join(__dirname, '../conditions');
+    let conditionsFolder = this.config.actionsFolder;
+    if (fs.existsSync(conditionsFolder)) {
+      let files = fs.readdirSync(conditionsFolder);
       if (files && files.length > 0) {
         files.forEach(f => {
           if (path.extname(f) !== '.js') return;
-          let file = path.join(actionFolder, f);
+          let file = path.join(conditionsFolder, f);
+          let plugin: IActionPlugin = require(file);
+          this.actions[path.basename(f).replace(/\.js/, '').toLowerCase()] = plugin;
+        });
+      } else {
+        throw Error('No actions found!');
+      }
+    }
+  }
+
+  /**
+   * Load the action plugins. If none are found, the rule engine is basically
+   * powerless, and so we throw an error.
+   *
+   * @private
+   */
+  private loadActionPlugins() {
+    // let actionFolder = path.join(__dirname, '../actions');
+    let actionsFolder = this.config.actionsFolder;
+    if (fs.existsSync(actionsFolder)) {
+      let files = fs.readdirSync(actionsFolder);
+      if (files && files.length > 0) {
+        files.forEach(f => {
+          if (path.extname(f) !== '.js') return;
+          let file = path.join(actionsFolder, f);
           let plugin: IActionPlugin = require(file);
           this.actions[path.basename(f).replace(/\.js/, '').toLowerCase()] = plugin;
         });
