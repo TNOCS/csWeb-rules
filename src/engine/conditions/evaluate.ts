@@ -17,8 +17,20 @@ export function evaluate(service: IRuleEngineService, data: string) {
   };
 }
 
+export function matchParentheses(condition: string) {
+  const re = /\s*\(([^)]+)\)\s*$/gmi;
+
+}
+
+/**
+ * Creates a function that checks a simple condition, e.g. speed >= 80.
+ *
+ * @export
+ * @param {string} condition
+ * @returns
+ */
 export function createConditionChecker(condition: string) {
-  const re = /^\s*f.([\w\d_-]+)\s*(<=|<|>=|>|={1,3})?\s*'?([\w\d_]+)?'?\s*$/gi;
+  const re = /^\s*([\w\d_-]+)\s*(<=|<|>=|>|={1,3})?\s*'?([\w\d_]+)?'?\s*$/gi;
 
   let match = re.exec(condition);
   let property = match[1];
@@ -30,24 +42,24 @@ export function createConditionChecker(condition: string) {
       case '==':
       case '=': return function (worldState: IWorldState) {
           let f = worldState.activeFeature;
-          return f && f.properties && f.hasOwnProperty(property) && f.properties[property] === value;
+          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] == value;
         };
       case '<': return function (worldState: IWorldState) {
-          let f = worldState.activeFeature;
-          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] < value;
-        };
+        let f = worldState.activeFeature;
+        return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] < value;
+      };
       case '>': return function (worldState: IWorldState) {
-          let f = worldState.activeFeature;
-          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] > value;
-        };
+        let f = worldState.activeFeature;
+        return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] > value;
+      };
       case '<=': return function (worldState: IWorldState) {
-          let f = worldState.activeFeature;
-          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] <= value;
-        };
+        let f = worldState.activeFeature;
+        return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] <= value;
+      };
       case '>=': return function (worldState: IWorldState) {
-          let f = worldState.activeFeature;
-          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] >= value;
-        };
+        let f = worldState.activeFeature;
+        return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] >= value;
+      };
     }
   } else if (match.length === 2) {
     // Check for the exisience of a property
