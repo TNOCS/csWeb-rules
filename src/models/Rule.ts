@@ -1,6 +1,7 @@
 import {Utils} from '../helpers/utils';
 import {IProperty} from '../models/Feature';
 import {WorldState} from './WorldState';
+import {IAction} from '../models/Action';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
 import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
 import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
@@ -30,12 +31,6 @@ export interface IRuleFile {
     publishers?: { [key: string]: ISinkConnectorConfig };
     /** List of rules */
     rules: IRule[];
-}
-
-export interface IAction {
-    method: string;
-    property: Object;
-    delay: number;
 }
 
 /** Specifies a single rule */
@@ -99,8 +94,8 @@ export class Rule implements IRule {
      * In case the condition is empty, the rule is always fired, on every process.
      */
     conditions: [[string | number | boolean]];
-    /** Set of actions that will be executed when */
-    actions: IAction[];
+    /** Set of actions that will be executed */
+    actions: IAction[] = [];
 
     /** Create a new rule. */
     constructor(rule: IRule, activationTime?: Date) {
@@ -121,7 +116,15 @@ export class Rule implements IRule {
         this.recurrence = rule.recurrence | 1;
         this.featureId = rule.featureId;
         this.conditions = rule.conditions;
-        this.actions = rule.actions;
+
+        this.initialize(rule.actions);
+    }
+
+    private initialize(actions: IAction[]) {
+      if (!actions || actions.length === 0) return;
+      actions.forEach(a => {
+        this.actions.push(a);
+      });
     }
 
     /** Evaluate the rule and execute all actions, is applicable. */
@@ -260,84 +263,85 @@ export class Rule implements IRule {
         for (let i = 0; i < this.actions.length; i++) {
             var a = this.actions[i];
             console.log(`Executing action: ` + JSON.stringify(a, null, 2));
-            var action = a.method;
-            var key: string | number | boolean;
-            if (typeof action === 'string') {
-                switch (action.toLowerCase()) {
-                    case 'sendmessage':
-                        if (!a.property || !a.property.hasOwnProperty('topic') || !a.property.hasOwnProperty('msg') || !a.property.hasOwnProperty('publisher')) {
-                            console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
-                            break;
-                        }
-                        let publisher = service.router.publishers[a.property['publisher']];
-                        if (!publisher) {
-                            console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
-                            break;
-                        }
-                        let topic = a.property['topic'];
-                        let msg = a.property['msg'];
-                        publisher.publish(topic, typeof msg === `string` ? msg : JSON.stringify(msg));
-                        break;
-                    case 'add':
-                        // add feature
-                        var id = service.timer.setTimeout(function(f, fid, service) {
-                            return () => {
-                                var feature = f;
-                                if (length > 1) {
-                                    var featureId = <string>a[1];
-                                    worldState.features.some(feat => {
-                                        if (feat && feat.id !== fid) return false;
-                                        feature = feat;
-                                        return true;
-                                    });
-                                }
-                                console.log('Add feature ' + feature.id);
-                                if (!feature.properties.hasOwnProperty('date')) feature.properties['date'] = new Date();
-                                if (!feature.properties.hasOwnProperty('roles')) feature.properties['roles'] = ['rti'];
-                                service.addFeature(feature);
-                            };
-                        } (this.feature, length > 1 ? <string>a[1] : '', service), this.getDelay(a));
-                        console.log(`Timer ${id}: Add feature ${this.isGenericRule ? a[1] : this.feature.id}`);
-                        break;
-                    case 'answer':
-                    case 'set':
-                        // Anwer, property, value [, delay], as set, but also sets answered to true and removes the action tag.
-                        // Set, property, value [, delay] sets value and updated.
-                        if (length < 3) {
-                            console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
-                            return;
-                        }
-                        if (typeof key === 'string') {
-                            this.setTimerForProperty(service, key, a[2], this.getDelay(a), action === 'answer');
-                        }
-                        break;
-                    case 'push':
-                        // push property value [, delay]
-                        if (length < 3) {
-                            console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
-                            return;
-                        }
-                        var key2 = a[1];
-                        if (typeof key2 === 'string') {
-                            var valp = a[2];
-                            var id = service.timer.setTimeout(function(f, k, v, service, updateProperty) {
-                                return () => {
-                                    console.log(`Feature ${f.id}. Pushing ${k}: ${v}`);
-                                    if (!f.properties.hasOwnProperty(k)) {
-                                        f.properties[k] = [v];
-                                    } else {
-                                        f.properties[k].push(v);
-                                    }
-                                    updateProperty(f, service, k, f.properties[k]);
-                                };
-                            } (this.feature, key2, valp, service, this.updateProperty), this.getDelay(a));
-                            console.log(`Timer ${id}: push ${key2}: ${valp}`);
-                        }
-                        break;
-                }
-            } else {
-                console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
-            }
+            a.run(worldState, service, a.property);
+            // var method = a.method;
+            // var key: string | number | boolean;
+            // if (typeof method === 'string') {
+                // switch (action.toLowerCase()) {
+                //     case 'sendmessage':
+                //         if (!a.property || !a.property.hasOwnProperty('topic') || !a.property.hasOwnProperty('msg') || !a.property.hasOwnProperty('publisher')) {
+                //             console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
+                //             break;
+                //         }
+                //         let publisher = service.router.publishers[a.property['publisher']];
+                //         if (!publisher) {
+                //             console.warn('We couldn\'t send a message: ' + JSON.stringify(a, null, 2));
+                //             break;
+                //         }
+                //         let topic = a.property['topic'];
+                //         let msg = a.property['msg'];
+                //         publisher.publish(topic, typeof msg === `string` ? msg : JSON.stringify(msg));
+                //         break;
+                //     case 'add':
+                //         // add feature
+                //         var id = service.timer.setTimeout(function(f, fid, service) {
+                //             return () => {
+                //                 var feature = f;
+                //                 if (length > 1) {
+                //                     var featureId = <string>a[1];
+                //                     worldState.features.some(feat => {
+                //                         if (feat && feat.id !== fid) return false;
+                //                         feature = feat;
+                //                         return true;
+                //                     });
+                //                 }
+                //                 console.log('Add feature ' + feature.id);
+                //                 if (!feature.properties.hasOwnProperty('date')) feature.properties['date'] = new Date();
+                //                 if (!feature.properties.hasOwnProperty('roles')) feature.properties['roles'] = ['rti'];
+                //                 service.addFeature(feature);
+                //             };
+                //         } (this.feature, length > 1 ? <string>a[1] : '', service), this.getDelay(a));
+                //         console.log(`Timer ${id}: Add feature ${this.isGenericRule ? a[1] : this.feature.id}`);
+                //         break;
+                //     case 'answer':
+                //     case 'set':
+                //         // Anwer, property, value [, delay], as set, but also sets answered to true and removes the action tag.
+                //         // Set, property, value [, delay] sets value and updated.
+                //         if (length < 3) {
+                //             console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
+                //             return;
+                //         }
+                //         if (typeof key === 'string') {
+                //             this.setTimerForProperty(service, key, a[2], this.getDelay(a), action === 'answer');
+                //         }
+                //         break;
+                //     case 'push':
+                //         // push property value [, delay]
+                //         if (length < 3) {
+                //             console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
+                //             return;
+                //         }
+                //         var key2 = a[1];
+                //         if (typeof key2 === 'string') {
+                //             var valp = a[2];
+                //             var id = service.timer.setTimeout(function(f, k, v, service, updateProperty) {
+                //                 return () => {
+                //                     console.log(`Feature ${f.id}. Pushing ${k}: ${v}`);
+                //                     if (!f.properties.hasOwnProperty(k)) {
+                //                         f.properties[k] = [v];
+                //                     } else {
+                //                         f.properties[k].push(v);
+                //                     }
+                //                     updateProperty(f, service, k, f.properties[k]);
+                //                 };
+                //             } (this.feature, key2, valp, service, this.updateProperty), this.getDelay(a));
+                //             console.log(`Timer ${id}: push ${key2}: ${valp}`);
+                //         }
+                //         break;
+                // }
+            // } else {
+            //     console.warn(`Rule ${this.id} contains an invalid action (ignored): ${a}!`);
+            //}
         }
     }
 

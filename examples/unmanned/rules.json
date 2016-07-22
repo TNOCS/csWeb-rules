@@ -9,23 +9,20 @@
             "name": "csWeb-rules"
         }
     },
-    "rules": [
-        {
-            "id": "fire test message",
-            "description": "Check the speed of a vehicle",
-            "recurrence": 10,
-            "isActive": true,
-            "conditions": [],
-            "actions": [
-                {
-                    "method": "sendMessage",
-                    "property": {
-                        "publisher": "imb",
-                        "topic": "test",
-                        "msg": "Hello world"
-                    }
-                }
-            ]
-        }
-    ]
+    "rules": [{
+        "id": "fire test message",
+        "description": "Check the speed of a vehicle",
+        "recurrence": 10,
+        "isActive": true,
+        "conditions": [],
+        "actions": [{
+            "method": "sendMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "test",
+                "method": "zoomTo",
+                "property": "$location"
+            }
+        }]
+    }]
 }
