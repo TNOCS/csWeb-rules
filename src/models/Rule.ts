@@ -263,7 +263,7 @@ export class Rule implements IRule {
         for (let i = 0; i < this.actions.length; i++) {
             var a = this.actions[i];
             console.log(`Executing action: ` + JSON.stringify(a, null, 2));
-            a.run(worldState, service, a.property);
+            a.run(worldState);
             // var method = a.method;
             // var key: string | number | boolean;
             // if (typeof method === 'string') {

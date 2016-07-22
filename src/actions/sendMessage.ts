@@ -3,25 +3,23 @@ import {IAction, ActionHelper} from '../models/Action';
 import { Utils } from '../helpers/Utils';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
 
-export interface ISendMessageData {
+export interface ISendMessageData extends IAction {
   topic: string;
   publisher: string;
-  message: string;
 }
 
-export function run(worldState: WorldState, service: IRuleEngineService, data: Object) {
-  if (!data || !data.hasOwnProperty('topic') || !data.hasOwnProperty('publisher')) {
-    console.warn('We couldn\'t send a message: ' + JSON.stringify(data, null, 2));
-    return;
-  }
+export function run(service: IRuleEngineService, data: ISendMessageData) {
+  if (!data || !data.hasOwnProperty('topic') || !data.hasOwnProperty('publisher')) return null;
   let publisher = service.router.publishers[data['publisher']];
-  if (!publisher) {
-    console.warn('We couldn\'t send a message: ' + JSON.stringify(data, null, 2));
-    return;
-  }
+  if (!publisher) return null;
   let topic = data['topic'];
-  let action = Utils.deepClone(data);
+  let action: ISendMessageData = Utils.deepClone(data);
   delete action.topic;
   delete action.publisher;
-  publisher.publish(topic, JSON.stringify(action));
+  return function (worldState: WorldState) {
+    if (action.property === '$location' && worldState.activeFeature) {
+      action.property = JSON.stringify(worldState.activeFeature.geometry);
+    }
+    publisher.publish(topic, JSON.stringify(action));
+  };
 }

@@ -2,7 +2,7 @@ import fs         = require('fs');
 import path       = require('path');
 import HyperTimer = require('hypertimer');
 import {Rule, IRule, IRuleFile} from '../models/Rule';
-import {IAction}                from '../models/Action';
+import {IAction, IActionPlugin} from '../models/Action';
 import {WorldState}             from '../models/WorldState';
 import {IRuleEngineConfig}      from './RuleEngineConfig';
 import {ISourceConnectorConfig} from '../router/connectors/SourceConnector';
@@ -64,7 +64,7 @@ export class RuleEngine {
    *
    * @type {{ [key: string]: IAction }}
    */
-  actions: { [key: string]: IAction } = {};
+  actions: { [key: string]: IActionPlugin } = {};
 
   /**
    * Creates an instance of RuleEngine.
@@ -73,25 +73,8 @@ export class RuleEngine {
    * @param {string} [ruleConfigFile='ruleConfig.json']
    */
   constructor(private done: Function, public config: IRuleEngineConfig) {
-    let actionFolder = path.join(__dirname, '../actions');
-    if (fs.existsSync(actionFolder)) {
-      let files = fs.readdirSync(actionFolder);
-      if (files && files.length > 0) {
-        files.forEach(f => {
-          if (path.extname(f) !== '.js') return;
-          let file = path.join(actionFolder, f);
-          let plugin: IAction = require(file);
-          this.actions[path.basename(f).replace(/\.js/, '').toLowerCase()] = plugin;
-        });
-      } else {
-        throw Error('No actions found!');
-      }
-    }
+    this.loadActionPlugins();
 
-    if (this.config.rulesFolder) {
-      if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);
-      this.loadRuleFiles(this.config.rulesFolder);
-    }
     // this.service.updateFeature = (feature: Feature) => manager.updateFeature(layerId, feature, {}, () => {});
     // this.service.addFeature = (feature: Feature) => manager.addFeature(layerId, feature, {}, () => {});
     // this.service.updateLog = (featureId: string, logs: {
@@ -102,6 +85,34 @@ export class RuleEngine {
     this.service.deactivateRule = (ruleId: string) => this.deactivateRule(ruleId);
     this.service.timer = new HyperTimer();
     this.service.router = this.router;
+
+    if (this.config.rulesFolder) {
+      if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);
+      this.loadRuleFiles(this.config.rulesFolder);
+    }
+  }
+
+  /**
+   * Load the action plugins. If none are found, the rule engine is basically
+   * powerless, and so we throw an error.
+   *
+   * @private
+   */
+  private loadActionPlugins() {
+    let actionFolder = path.join(__dirname, '../actions');
+    if (fs.existsSync(actionFolder)) {
+      let files = fs.readdirSync(actionFolder);
+      if (files && files.length > 0) {
+        files.forEach(f => {
+          if (path.extname(f) !== '.js') return;
+          let file = path.join(actionFolder, f);
+          let plugin: IActionPlugin = require(file);
+          this.actions[path.basename(f).replace(/\.js/, '').toLowerCase()] = plugin;
+        });
+      } else {
+        throw Error('No actions found!');
+      }
+    }
   }
 
   private loadRuleFiles(rulesFolder: string) {
@@ -152,7 +163,7 @@ export class RuleEngine {
           if (!a.method) return;
           let plugin = this.actions[a.method.toLowerCase()];
           if (!plugin) return;
-          a.run = plugin.run;
+          a.run = plugin.run(this.service, a.property);
           executableActions.push(a);
         });
         if (executableActions.length === 0) return;

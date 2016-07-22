@@ -1,11 +1,23 @@
 import {WorldState} from './WorldState';
 import {RuleEngine, IRuleEngineService} from '../engine/RuleEngine';
 
+/**
+ * Action plugin interface.
+ * Uses currying to supply the rule engine service and the action property data,
+ * so we only need to process it once.
+ *
+ * @export
+ * @interface IActionPlugin
+ */
+export interface IActionPlugin {
+  run: (service: IRuleEngineService, data?: any) => (worldState: WorldState) => void;
+}
+
 export interface IAction {
     method: string;
     property?: Object;
     delay?: number;
-    run?: (worldState: WorldState, service: IRuleEngineService, data?: any) => void;
+    run?: (worldState: WorldState) => void;
 }
 
 export interface IAction {
