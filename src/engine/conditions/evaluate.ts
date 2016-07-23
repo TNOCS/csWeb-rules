@@ -10,16 +10,97 @@ export interface IEvaluateCondition {
 }
 
 export function evaluate(service: IRuleEngineService, data: string) {
-
   if (!data) return null;
 
+  let condition = normalize(data);
+  let conditions = splitAndOr(condition);
+  if (conditions.length === 1) return createSimpleConditionChecker(conditions[0]);
+
+  let andConditions: Function[][] = [];
+  let index = 0;
+  andConditions[index] = [];
+  conditions.forEach(c => {
+    switch (c) {
+      case 'AND':
+      case 'and': break;
+      case 'OR':
+      case 'or':
+        andConditions[++index] = [];
+        break;
+      default:
+        andConditions[index].push(createSimpleConditionChecker(c));
+        break;
+    }
+  });
+
   return function (worldState: WorldState) {
+    let allAndConditionsFulfilled = true;
+    andConditions.some(ac => {
+      allAndConditionsFulfilled = true;
+      ac.some(c => {
+        if (c(worldState)) return false;
+        allAndConditionsFulfilled = false;
+        return true;
+      });
+      return allAndConditionsFulfilled;
+    });
+    return allAndConditionsFulfilled;
   };
 }
 
-export function matchParentheses(condition: string) {
-  const re = /\s*\(([^)]+)\)\s*$/gmi;
+export function normalize(condition: string) {
+  const re = /\s*([=><]{1,3})\s*/gi;
+  const subst = '$1';
+  return condition.replace(re, subst);
+}
 
+// export function splitAndOrParentheses(condition: string) {
+//   const re = /\(\s*([\w\.'_<>=]+)\s+(and|or)\s+([\w\.'_<>=])\s*\)|([\w\.'_<>=]+)/gmi;
+//   let m, group = [];
+//   while ((m = re.exec(condition)) !== null) {
+//     if (m.index === re.lastIndex) {
+//       re.lastIndex++;
+//     }
+//     if (m[4]) {
+//       group.push(m[4]);
+//     } else {
+//       group.push(m.splice(1, 3));
+//     }
+//     console.log(m);
+//   }
+//   // console.log(group);
+// }
+
+/**
+ * Split each condition and the AND and OR instructions.
+ *
+ * @export
+ * @param {string} condition
+ * @returns
+ */
+export function splitAndOr(condition: string) {
+  const re = /\s+(and|or)\s+|([\w_>=<\'\"\.]*)?/gi;
+  let m, group: string[] = [];
+
+  while ((m = re.exec(condition)) !== null) {
+    if (m.index === re.lastIndex) {
+      re.lastIndex++;
+    }
+    let match = m[1] || m[0];
+    if (match) group.push(match);
+  }
+  return group;
+}
+
+/**
+ * Returns an AND or OR condition checker.
+ *
+ * @export
+ * @param {string[]} condition: simpleCondition, AND or OR, simpleCondition
+ */
+export function createAndOrChecker(condition: string[]) {
+  if (condition.length !== 3) throw new Error('Cannot create ')
+  switch (condition[1]) { }
 }
 
 /**
@@ -29,8 +110,8 @@ export function matchParentheses(condition: string) {
  * @param {string} condition
  * @returns
  */
-export function createConditionChecker(condition: string) {
-  const re = /^\s*([\w\d_-]+)\s*(<=|<|>=|>|={1,3})?\s*'?([\w\d_]+)?'?\s*$/gi;
+export function createSimpleConditionChecker(condition: string) {
+  const re = /^\s*([\w\d_-]+)\s*(<=|<|>=|>|={1,3})?\s*'?"?([\w\d_]+)?'?"?\s*$/gi;
 
   let match = re.exec(condition);
   let property = match[1];
@@ -41,9 +122,9 @@ export function createConditionChecker(condition: string) {
       case '===':
       case '==':
       case '=': return function (worldState: IWorldState) {
-          let f = worldState.activeFeature;
-          return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] == value;
-        };
+        let f = worldState.activeFeature;
+        return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] == value;
+      };
       case '<': return function (worldState: IWorldState) {
         let f = worldState.activeFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] < value;
