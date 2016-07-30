@@ -1,13 +1,8 @@
 import {WorldState, IWorldState}        from '../../models/WorldState';
-import {IAction, ActionHelper}          from '../../models/Action';
 import {Utils}                          from '../../helpers/Utils';
 import {RuleEngine, IRuleEngineService} from '../../engine/RuleEngine';
+import {ICondition}                     from '../../models/Condition';
 
-export interface IEvaluateCondition {
-  property?: string;
-  operator?: string;
-  value?: string | number | Date;
-}
 
 export function evaluate(service: IRuleEngineService, data: string) {
   if (!data) return null;
@@ -122,30 +117,30 @@ export function createSimpleConditionChecker(condition: string) {
       case '===':
       case '==':
       case '=': return function (worldState: IWorldState) {
-        let f = worldState.activeFeature;
+        let f = worldState.updatedFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] == value;
       };
       case '<': return function (worldState: IWorldState) {
-        let f = worldState.activeFeature;
+        let f = worldState.updatedFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] < value;
       };
       case '>': return function (worldState: IWorldState) {
-        let f = worldState.activeFeature;
+        let f = worldState.updatedFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] > value;
       };
       case '<=': return function (worldState: IWorldState) {
-        let f = worldState.activeFeature;
+        let f = worldState.updatedFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] <= value;
       };
       case '>=': return function (worldState: IWorldState) {
-        let f = worldState.activeFeature;
+        let f = worldState.updatedFeature;
         return f && f.properties && f.properties.hasOwnProperty(property) && f.properties[property] >= value;
       };
     }
   } else if (match.length === 2) {
     // Check for the exisience of a property
     return function (worldState: IWorldState) {
-      let f = worldState.activeFeature;
+      let f = worldState.updatedFeature;
       return f && f.properties && f.properties.hasOwnProperty(property);
     };
   }

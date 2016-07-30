@@ -1,6 +1,7 @@
 {
   "name": "test-ts",
   "globalDependencies": {
-    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#e5b11858676f54051a890ca63f9c06ab6f515251"
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#e5b11858676f54051a890ca63f9c06ab6f515251",
+    "winston": "registry:dt/winston#0.0.0+20160417152829"
   }
 }

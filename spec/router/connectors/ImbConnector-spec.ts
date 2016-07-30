@@ -1,7 +1,7 @@
 import {ImbConnector} from '../../../src/router/connectors/ImbConnector';
 import {ISinkConnectorConfig} from '../../../src/router/connectors/SinkConnector';
 
-describe('The IMB connector', () => {
+xdescribe('The IMB connector', () => {
     var imb: ImbConnector;
     var testConnectionSettings: ISinkConnectorConfig;
 
@@ -9,7 +9,8 @@ describe('The IMB connector', () => {
         testConnectionSettings = {
             id: 1234,
             type: 'IMB',
-            host: 'imb.lohman-solutions.com',
+            host_alt: 'imb.lohman-solutions.com',
+            host: 'localhost',
             port: 4000,
             name: 'Test',
             federation: 'TNOdemo'

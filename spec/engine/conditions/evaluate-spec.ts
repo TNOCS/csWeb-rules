@@ -11,7 +11,7 @@ describe('The evaluation of a condition', () => {
       properties: {}
     };
     worldState = {
-      activeFeature: feature
+      updatedFeature: feature
     };
   });
 
@@ -33,109 +33,109 @@ describe('The evaluation of a condition', () => {
   });
 
   it('should check simple conditions', () => {
-    worldState.activeFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['speed'] = 75;
     let condition = 'speed > 80';
     let checker = createSimpleConditionChecker(condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['speed'] = 85;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it('should check equality', () => {
-    worldState.activeFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['speed'] = 75;
     let condition = 'speed === 80';
     let checker = createSimpleConditionChecker(condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 80;
+    worldState.updatedFeature.properties['speed'] = 80;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it ('should evaluate simple conditions', () => {
-    worldState.activeFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['speed'] = 75;
     let condition = 'speed > 80';
     let checker = evaluate(null, condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['speed'] = 85;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it ('should evaluate one AND condition', () => {
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'car';
     let condition = 'speed > 80 AND type === "truck" ';
     let checker = evaluate(null, condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
-    worldState.activeFeature.properties['type'] = 'truck';
+    worldState.updatedFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['type'] = 'truck';
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it ('should evaluate two AND conditions', () => {
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'car';
-    worldState.activeFeature.properties['age'] = 10;
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['age'] = 10;
     let condition = 'speed > 80 AND type === "truck" AND age <= 12 ';
     let checker = evaluate(null, condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
-    worldState.activeFeature.properties['type'] = 'truck';
-    worldState.activeFeature.properties['age'] = 12;
+    worldState.updatedFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['type'] = 'truck';
+    worldState.updatedFeature.properties['age'] = 12;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it ('should evaluate one AND and one OR conditions', () => {
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'car';
-    worldState.activeFeature.properties['age'] = 15;
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['age'] = 15;
     let condition = 'speed > 80 AND type === "truck" OR age <= 12 ';
     let checker = evaluate(null, condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
-    worldState.activeFeature.properties['type'] = 'truck';
-    worldState.activeFeature.properties['age'] = 10;
+    worldState.updatedFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['type'] = 'truck';
+    worldState.updatedFeature.properties['age'] = 10;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });
 
   it ('should evaluate two OR conditions', () => {
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'car';
-    worldState.activeFeature.properties['age'] = 15;
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['age'] = 15;
     let condition = 'speed > 80 OR type === "truck" OR age <= 12 ';
     let checker = evaluate(null, condition);
     let result: boolean;
     result = checker(worldState);
     expect(result).toBeFalsy();
-    worldState.activeFeature.properties['speed'] = 85;
-    worldState.activeFeature.properties['type'] = 'car';
-    worldState.activeFeature.properties['age'] = 15;
+    worldState.updatedFeature.properties['speed'] = 85;
+    worldState.updatedFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['age'] = 15;
     result = checker(worldState);
     expect(result).toBeTruthy();
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'truck';
-    worldState.activeFeature.properties['age'] = 15;
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'truck';
+    worldState.updatedFeature.properties['age'] = 15;
     result = checker(worldState);
     expect(result).toBeTruthy();
-    worldState.activeFeature.properties['speed'] = 75;
-    worldState.activeFeature.properties['type'] = 'car';
-    worldState.activeFeature.properties['age'] = 10;
+    worldState.updatedFeature.properties['speed'] = 75;
+    worldState.updatedFeature.properties['type'] = 'car';
+    worldState.updatedFeature.properties['age'] = 10;
     result = checker(worldState);
     expect(result).toBeTruthy();
   });

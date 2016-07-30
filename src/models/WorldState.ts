@@ -15,7 +15,7 @@ export interface IWorldState {
      * Active feature.
      * In case it is undefined, you can only evaluate the non-feature specific rules.
      */
-    activeFeature?: GeoJSON.Feature<GeoJSON.GeometryObject>;
+    updatedFeature?: GeoJSON.Feature<GeoJSON.GeometryObject>;
     /**
      * Active layer id is used for working with features.
      * TODO I assume that later, we need to make this more flexible, allowing you to specify
@@ -38,10 +38,10 @@ export class WorldState implements IWorldState {
     /** Imported features, e.g. namespaces */
     imports: { [key: string]: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject>} } = {};
     /**
-     * Active feature.
+     * Updated or new feature.
      * In case it is undefined, you can only evaluate the non-feature specific rules.
      */
-    activeFeature: GeoJSON.Feature<GeoJSON.GeometryObject>;
+    updatedFeature: GeoJSON.Feature<GeoJSON.GeometryObject>;
     /**
      * Active layer id is used for working with features.
      * TODO I assume that later, we need to make this more flexible, allowing you to specify

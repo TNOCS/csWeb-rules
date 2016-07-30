@@ -16,7 +16,7 @@
         "isActive": true,
         "conditions": [],
         "actions": [{
-            "method": "sendMessage",
+            "method": "sendImbMessage",
             "property": {
                 "publisher": "imb",
                 "topic": "test",

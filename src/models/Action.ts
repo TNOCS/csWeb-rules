@@ -21,13 +21,13 @@ export interface IAction {
 }
 
 export class ActionHelper {
-  static resolve(worldState: WorldState, prop: string) {
-    switch (prop.toLowerCase()) {
-      case '$location': return ActionHelper.getLocation(worldState);
-      default: return null;
-    }
-  }
+  // static resolve(worldState: WorldState, prop: string) {
+  //   switch (prop.toLowerCase()) {
+  //     case '$location': return ActionHelper.getLocation(worldState);
+  //     default: return null;
+  //   }
+  // }
 
-  static getLocation(worldState: WorldState) { return worldState.activeFeature.geometry; }
+  // static getLocation(worldState: WorldState) { return worldState.activeFeatures.geometry; }
 
 }

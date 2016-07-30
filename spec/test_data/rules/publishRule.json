@@ -3,7 +3,8 @@
         "imb": {
             "id": 1234,
             "type": "IMB",
-            "host": "imb.lohman-solutions.com",
+            "host_alt": "imb.lohman-solutions.com",
+            "host": "localhost",
             "port": 4000,
             "name": "Test"
         }

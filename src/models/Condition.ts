@@ -14,7 +14,9 @@ export interface IConditionPlugin {
 }
 
 export interface ICondition {
-    method: string;
-    property?: string | Object;
-    evaluate?: (worldState: WorldState) => void;
+  method: string;
+  property?: string | Object;
+  operator?: string;
+  value?: string | number | Date;
+  evaluate?: (worldState: WorldState) => void;
 }
