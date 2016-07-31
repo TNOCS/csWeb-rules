@@ -155,7 +155,7 @@ export class Rule implements IRule {
     this.actions = rule.actions;
   }
 
-  /** Evaluate the rule and execute all actions, is applicable. */d
+  /** Evaluate the rule and execute all actions, if applicable. */
   process(worldState: WorldState, service: IRuleEngineService) {
     // Check if we need to do anything.
     if (!this.isActive || this.recurrence === 0) return;

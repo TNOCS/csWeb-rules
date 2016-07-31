@@ -26,7 +26,7 @@ describe('The rule engine', () => {
     });
 
     it('should be able to import geojson data.', () => {
-        expect(ruleEngine.worldState.imports.hasOwnProperty('areas')).toBeTruthy();
+        expect(ruleEngine.worldState.features.hasOwnProperty('areas')).toBeTruthy();
     });
 
 });

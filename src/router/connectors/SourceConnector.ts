@@ -5,6 +5,8 @@ export interface ISourceConnectorConfig {
     type: string;
     host?: string;
     port?: number;
+    /** Which property should we use to name the feature. */
+    referenceId?: string;
     /** Refresh interval for the source in [msec]. */
     refreshInterval?: number;
     [key: string]: any;

@@ -10,6 +10,7 @@ import {WorldState}                           from '../models/WorldState';
 import {ISourceConnectorConfig}               from '../router/connectors/SourceConnector';
 import {ISinkConnectorConfig}                 from '../router/connectors/SinkConnector';
 import {Router}                               from '../router/Router';
+import {Utils}                                from '../helpers/Utils';
 
 var logger = new winston.Logger({
   level: 'debug',
@@ -188,10 +189,10 @@ export class RuleEngine {
     let ruleFile: IRuleFile = require(path.join(folder, file));
     this.loadedRuleFiles.push(file);
     if (ruleFile.imports) {
-      for (var key in ruleFile.imports) {
-        if (!ruleFile.imports.hasOwnProperty(key)) continue;
-        let importFileReference = ruleFile.imports[key];
-        this.importGeoJSON(key, folder, importFileReference);
+      for (var ns in ruleFile.imports) {
+        if (!ruleFile.imports.hasOwnProperty(ns)) continue;
+        let importFileReference = ruleFile.imports[ns];
+        this.importGeoJSON(ns, folder, importFileReference);
       }
     }
     if (ruleFile.subscribers) {
@@ -259,7 +260,8 @@ export class RuleEngine {
         let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = <GeoJSON.FeatureCollection<GeoJSON.GeometryObject>>result;
         if (!geojson || geojson.type !== 'FeatureCollection' || !geojson.features) return;
         geojson.features.forEach(f => {
-          // TODO Update WorldState feature list
+          let id = this.resolveId(f, config.referenceId) || Utils.newGuid();
+          this.worldState[key][id] = f;
           this.evaluateRules(f);
         });
       });
@@ -296,39 +298,55 @@ export class RuleEngine {
     }
   }
 
-  private importGeoJSON(key: string, folder: string, fileReference: { path: string, referenceId?: string }) {
+  private importGeoJSON(ns: string, folder: string, fileReference: { path: string, referenceId?: string }) {
     let importFile = path.isAbsolute(fileReference.path) ? fileReference.path : path.join(folder, fileReference.path);
     if (!fs.existsSync(importFile)) return;
     let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = require(importFile);
     if (!geojson || !geojson.features || geojson.features.length === 0) return;
-    if (this.worldState.hasOwnProperty(key)) {
-      logger.error(`Error importing ${importFile}: Key ${key} already exists!`);
+    if (this.worldState.hasOwnProperty(ns)) {
+      logger.error(`Error importing ${importFile}: Key ${ns} already exists!`);
       return;
     }
-    let importedFeatures: { [key: string]: GeoJSON.Feature<GeoJSON.GeometryObject> } = {};
+    let importedFeatures: { [id: string]: GeoJSON.Feature<GeoJSON.GeometryObject> } = {};
     geojson.features.forEach(f => {
-      let key = (fileReference.referenceId && f.properties && f.properties.hasOwnProperty(fileReference.referenceId))
-        ? f.properties[fileReference.referenceId]
-        : f.id;
-      if (!key && f.properties) {
-        if (f.properties.hasOwnProperty['Name']) {
-          key = f.properties['Name'];
-        } else if (f.properties.hasOwnProperty['name']) {
-          key = f.properties['name'];
-        }
-      }
-      if (!key) {
+      let id = this.resolveId(f, fileReference.referenceId);
+      // let id = (fileReference.referenceId && f.properties && f.properties.hasOwnProperty(fileReference.referenceId))
+      //   ? f.properties[fileReference.referenceId]
+      //   : f.id;
+      // if (!id && f.properties) {
+      //   if (f.properties.hasOwnProperty['Name']) {
+      //     id = f.properties['Name'];
+      //   } else if (f.properties.hasOwnProperty['name']) {
+      //     id = f.properties['name'];
+      //   }
+      // }
+      if (!id) {
         logger.error(`Error importing feature from ${importFile}: feature has no key (id, name or Name property)! Feature:\n ${JSON.stringify(f, null, 2)}`);
         return;
       }
-      if (importedFeatures.hasOwnProperty(key)) {
-        logger.error(`Error importing feature from ${importFile}: Key ${key} already exitst! Feature:\n ${JSON.stringify(f, null, 2)}`);
+      if (importedFeatures.hasOwnProperty(id)) {
+        logger.error(`Error importing feature from ${importFile}: Key ${id} already exitst! Feature:\n ${JSON.stringify(f, null, 2)}`);
         return;
       } else {
-        importedFeatures[key] = f;
+        importedFeatures[id] = f;
       }
     });
-    this.worldState.imports[key] = importedFeatures;
+    this.worldState.features[ns] = importedFeatures;
+  }
+
+  private resolveId(feature: GeoJSON.Feature<GeoJSON.GeometryObject>, referenceId?: string) {
+    let props = feature.properties;
+    let id = (referenceId && feature.properties && feature.properties.hasOwnProperty(referenceId))
+      ? props[referenceId]
+      : feature.id;
+    if (!id && props) {
+      if (props.hasOwnProperty['Name']) {
+        id = props['Name'];
+      } else if (props.hasOwnProperty['name']) {
+        id = props['name'];
+      }
+    }
+    return id;
   }
 
   evaluateRules(feature?: GeoJSON.Feature<GeoJSON.GeometryObject>) {
