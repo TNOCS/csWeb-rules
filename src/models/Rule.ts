@@ -149,18 +149,10 @@ export class Rule implements IRule {
     if (this.activationType !== RuleActivationType.Continuously) {
       this.activatedFeatureIds = [];
     }
-    this.recurrence = rule.recurrence | 1;
+    this.recurrence = rule.recurrence || 1;
     this.featureId = rule.featureId;
     this.conditions = rule.conditions;
-
-    this.initialize(rule.actions);
-  }
-
-  private initialize(actions: IAction[]) {
-    if (!actions || actions.length === 0) return;
-    actions.forEach(a => {
-      this.actions.push(a);
-    });
+    this.actions = rule.actions;
   }
 
   /** Evaluate the rule and execute all actions, is applicable. */d

@@ -10,14 +10,16 @@ describe('A Rule', () => {
     run: () => { return effect = true; }
   };
 
+  let isRuleActive = true;
   let worldState: WorldState;
   let service = {
     logger: new winston.Logger(),
-    deactivateRule: () => { return; }
+    deactivateRule: () => { return isRuleActive = false; }
   };
 
   beforeEach(() => {
     effect = false;
+    isRuleActive = true;
     let feature: GeoJSON.Feature<GeoJSON.GeometryObject> = {
       type: 'Feature',
       geometry: {  type: 'Feature', coordinates: [] },
@@ -82,6 +84,25 @@ describe('A Rule', () => {
       method: 'dummy',
       evaluate: () => { return false; }
     }];
+    rule.process(worldState, service );
+    expect(effect).toBeFalsy();
+  });
+
+  it('should respect the rule\'s recurrence', () => {
+    let rule = new Rule({
+      isActive: true,
+      isGenericRule: true,
+      recurrence: 2,
+      activationType: RuleActivationType.Continuously,
+      actions: [action]
+    });
+    rule.process(worldState, service );
+    expect(effect).toBeTruthy();
+    effect = false;
+    rule.process(worldState, service );
+    expect(effect).toBeTruthy();
+    effect = false;
+    expect(isRuleActive).toBeFalsy();
     rule.process(worldState, service );
     expect(effect).toBeFalsy();
   });
