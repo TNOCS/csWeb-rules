@@ -7,7 +7,7 @@ describe('The evaluation of a condition', () => {
   beforeEach(() => {
     let feature: GeoJSON.Feature<GeoJSON.GeometryObject> = {
       type: 'Feature',
-      geometry: {  type: 'Feature', coordinates: [] },
+      geometry: {  type: 'Point', coordinates: [] },
       properties: {}
     };
     worldState = {
