@@ -2,6 +2,7 @@ import winston = require('winston');
 import { Rule, RuleActivationType, IRule } from '../../src/models/Rule';
 import { IAction } from '../../src/models/Action';
 import { WorldState } from '../../src/models/WorldState';
+import { ServiceMock  } from '../mocks/serviceMock';
 
 describe('A Rule', () => {
   let effect = false;
@@ -10,16 +11,12 @@ describe('A Rule', () => {
     run: () => { return effect = true; }
   };
 
-  let isRuleActive = true;
   let worldState: WorldState;
-  let service = {
-    logger: new winston.Logger(),
-    deactivateRule: () => { return isRuleActive = false; }
-  };
+  let service = new ServiceMock();
 
   beforeEach(() => {
     effect = false;
-    isRuleActive = true;
+    service.isRuleActive = true;
     let feature: GeoJSON.Feature<GeoJSON.GeometryObject> = {
       type: 'Feature',
       geometry: {  type: 'Feature', coordinates: [] },
@@ -102,7 +99,7 @@ describe('A Rule', () => {
     rule.process(worldState, service );
     expect(effect).toBeTruthy();
     effect = false;
-    expect(isRuleActive).toBeFalsy();
+    expect(service.isRuleActive).toBeFalsy();
     rule.process(worldState, service );
     expect(effect).toBeFalsy();
   });

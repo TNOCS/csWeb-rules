@@ -5,7 +5,10 @@ import {ICondition}                     from '../../models/Condition';
 
 
 export function evaluate(service: IRuleEngineService, data: string) {
-  if (!data) return null;
+  if (!data) {
+    service.logger.error('Cannot evaluate empty rule!');
+    return null;
+  }
 
   let condition = normalize(data);
   let conditions = splitAndOr(condition);
