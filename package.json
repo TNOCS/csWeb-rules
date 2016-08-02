@@ -1,44 +1,49 @@
 {
-  "name": "test-ts",
-  "version": "0.0.0",
-  "description": "",
-  "license": "",
-  "repository": "",
-  "author": "",
-  "keywords": [
-    ""
-  ],
-  "files": [
-    "lib"
-  ],
-  "scripts": {
-    "test": "gulp test"
-  },
-  "dependencies": {
-    "command-line-usage": "^3.0.3",
-    "hypertimer": "^2.1.3",
-    "turf": "^3.0.11",
-    "winston": "^2.2.0"
-  },
-  "devDependencies": {
-    "browserify": "^13.0.0",
-    "del": "2.0.2",
-    "gulp": "^3.9.1",
-    "gulp-help": "^1.6.0",
-    "gulp-inject": "3.0.0",
-    "gulp-jasmine": "^2.3.0",
-    "gulp-sequence": "0.4.1",
-    "gulp-tsconfig-files": "0.0.2",
-    "gulp-tslint": "^3.1",
-    "jasmine": "^2.4",
-    "karma": "^0.13.21",
-    "karma-browserify": "^5.0.1",
-    "karma-chrome-launcher": "^0.2.2",
-    "karma-jasmine": "^0.3.7",
-    "node-gyp": "^3.4.0",
-    "watchify": "^3.7.0"
-  },
-  "engines": {
-    "node": ">=0.12.0"
-  }
+    "name": "rules",
+    "version": "0.0.1",
+    "description": "A simple rules engine: you can specify the conditions under which the rules should trigger, and the actions to take.",
+    "license": "MIT",
+    "repository": "http://github.com/TNOCS/csWeb-rules",
+    "author": "Erik Vullings <erik.vullings@gmail.com>",
+    "keywords": [
+        "Rules engine"
+    ],
+    "files": [
+        "lib"
+    ],
+    "scripts": {
+        "test": "gulp test",
+        "watch": "gulp && tsc -w",
+        "patch-release": "npm version patch && npm publish && git push --follow-tags"
+    },
+    "bin": {
+        "rules": "./bin/run.js"
+    },
+    "dependencies": {
+        "command-line-usage": "^3.0.3",
+        "hypertimer": "^2.1.3",
+        "turf": "^3.0.11",
+        "winston": "^2.2.0"
+    },
+    "devDependencies": {
+        "browserify": "^13.0.0",
+        "del": "2.0.2",
+        "gulp": "^3.9.1",
+        "gulp-help": "^1.6.0",
+        "gulp-inject": "3.0.0",
+        "gulp-jasmine": "^2.3.0",
+        "gulp-sequence": "0.4.1",
+        "gulp-tsconfig-files": "0.0.2",
+        "gulp-tslint": "^3.1",
+        "jasmine": "^2.4",
+        "karma": "^0.13.21",
+        "karma-browserify": "^5.0.1",
+        "karma-chrome-launcher": "^0.2.2",
+        "karma-jasmine": "^0.3.7",
+        "node-gyp": "^3.4.0",
+        "watchify": "^3.7.0"
+    },
+    "engines": {
+        "node": ">=0.12.0"
+    }
 }
