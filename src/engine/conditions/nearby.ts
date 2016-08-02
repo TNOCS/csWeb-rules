@@ -98,7 +98,7 @@ export function evaluate(service: IRuleEngineService, data: INearbyCondition) {
       service.logger.error(`Cannot parse locationLatLng as [lat, lng]: ${data.locationLatLng}!`);
       return undefined;
     }
-    let refLocation: GeoJSON.Feature<GeoJSON.Point> = {
+    var reference: GeoJSON.Feature<GeoJSON.Point> = {
       type: 'Feature',
       geometry: {
         type: 'Point',
@@ -109,7 +109,7 @@ export function evaluate(service: IRuleEngineService, data: INearbyCondition) {
     return function (worldState: IWorldState) {
       let point: GeoJSON.Feature<GeoJSON.Point> = <GeoJSON.Feature<GeoJSON.Point>>worldState.updatedFeature;
       if (!point || !point.geometry || point.geometry.type !== 'Point') return false;
-      return turf.distance(point, refLocation, units) <= data.distance;
+      return turf.distance(point, reference, units) <= data.distance;
     };
   }
 

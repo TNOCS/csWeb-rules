@@ -14,19 +14,20 @@ describe('Inside condition', () => {
     },
     properties: {}
   };
-  let feature: GeoJSON.Feature<GeoJSON.Point> = {
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [14, 5]
-    },
-    properties: {}
-  };
+  let feature: GeoJSON.Feature<GeoJSON.Point>;
 
   beforeEach(() => {
     data = {
       locationId: 'areas.location',
       distance: 10
+    };
+    feature = {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [14, 5]
+      },
+      properties: {}
     };
     worldState = {
       features: {
