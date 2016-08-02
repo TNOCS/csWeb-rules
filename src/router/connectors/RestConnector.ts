@@ -11,8 +11,10 @@ export class RestConnector extends BaseSourceConnector {
      * @param {string} url of REST source.
      * @param {number} [refreshInterval=5000] in milliseconds
      */
-    constructor(private url: string, private refreshInterval = 5000) {
+    constructor(private url: string, private port = 80, private refreshInterval = 5000) {
         super();
+        if (this.url.indexOf('http://') === -1) this.url = 'http://' + this.url;
+        if (this.port !== 80) this.url = `${this.url}:${port}`;
     }
 
     connect(callback: (result: any) => void) {

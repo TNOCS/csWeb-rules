@@ -21,7 +21,7 @@ export class Router extends EventEmitter {
         }
         switch (config.type.toLowerCase()) {
             case 'rest':
-                let restConnector = new RestConnector(config.host, config.refreshInterval || -1);
+                let restConnector = new RestConnector(config.host, config.port, config.refreshInterval || -1);
                 restConnector.connect((result: any) => {
                     this.emit(`update_${subscription}`, result);
                 });
