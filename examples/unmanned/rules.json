@@ -1,4 +1,18 @@
 {
+    "imports": {
+        "areas": {
+            "path": "../imports/provinces.json",
+            "referenceId": "Provincien"
+        }
+    },
+    "subscribers": {
+        "tracks": {
+            "type": "REST",
+            "host": "localhost",
+            "port": 9000,
+            "refreshInterval": 5
+        }
+    },
     "publishers": {
         "imb": {
             "id": 5432,
