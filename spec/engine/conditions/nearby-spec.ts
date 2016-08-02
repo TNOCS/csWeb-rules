@@ -18,7 +18,7 @@ describe('Inside condition', () => {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [15, 15]
+      coordinates: [14, 5]
     },
     properties: {}
   };
@@ -42,22 +42,49 @@ describe('Inside condition', () => {
     expect(conditionChecker).toBeUndefined();
   });
 
-  it('should fail undefined polyIds', () => {
-    data.locationId = '';
+  it('should fail undefined distance', () => {
+    data.distance = undefined;
     let conditionChecker = evaluate(service, data);
     expect(conditionChecker).toBeUndefined();
   });
 
-  it('should fail badly defined polyIds', () => {
-    data.polyId = 'areasnais';
+  it('should fail badly defined locationLatLng', () => {
+    data.locationId = undefined;
+    data.locationLatLng = [1, 2, 3];
     let conditionChecker = evaluate(service, data);
     expect(conditionChecker).toBeUndefined();
   });
 
-  it('should fail non-existing polyIds', () => {
-    worldState.updatedFeature = referenceLocation;
-    data.polyId = 'areas.unknownNais';
+  it('should fail badly defined locationId', () => {
+    data.locationId = 'areaslocation';
     let conditionChecker = evaluate(service, data);
+    expect(conditionChecker).toBeUndefined();
+  });
+
+  it('should fail non-existing locationId', () => {
+    data.locationId = 'areas.locationUnknown';
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeFalsy();
+  });
+
+  it('should check the nearness for locationId', () => {
+    data.locationId = 'areas.location';
+    data.units = 'degrees';
+    worldState.updatedFeature = feature;
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeTruthy();
+    feature.geometry.coordinates = [16, 5];
+    expect(conditionChecker(worldState)).toBeFalsy();
+  });
+
+  it('should check the nearness for locationLatLng', () => {
+    data.locationId = undefined;
+    data.locationLatLng = [5, 5];
+    data.units = 'degrees';
+    worldState.updatedFeature = feature;
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeTruthy();
+    feature.geometry.coordinates = [16, 5];
     expect(conditionChecker(worldState)).toBeFalsy();
   });
 

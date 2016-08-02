@@ -14,11 +14,11 @@ export interface INearbyCondition {
    */
   distance: number;
   /**
-   * Location on the map
+   * Location as [latitude, longitude] on the map
    *
-   * @type {GeoJSON.Point}
+   * @type {number[]}
    */
-  location?: GeoJSON.Point;
+  locationLatLng?: number[];
   /**
    * ID of another feature.
    *
@@ -93,19 +93,22 @@ export function evaluate(service: IRuleEngineService, data: INearbyCondition) {
     }
   }
 
-  if (data.location) {
-    if (typeof data.location ===)
+  if (data.locationLatLng) {
+    if (data.locationLatLng.length !== 2) {
+      service.logger.error(`Cannot parse locationLatLng as [lat, lng]: ${data.locationLatLng}!`);
+      return undefined;
+    }
     let refLocation: GeoJSON.Feature<GeoJSON.Point> = {
       type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: data.location
-      }
+        coordinates: data.locationLatLng
+      },
+      properties: {}
     }
     return function (worldState: IWorldState) {
       let point: GeoJSON.Feature<GeoJSON.Point> = <GeoJSON.Feature<GeoJSON.Point>>worldState.updatedFeature;
       if (!point || !point.geometry || point.geometry.type !== 'Point') return false;
-      let refLocation = <GeoJSON.Feature<GeoJSON.Point>>worldState.features[ns][id];
       return turf.distance(point, refLocation, units) <= data.distance;
     };
   }
