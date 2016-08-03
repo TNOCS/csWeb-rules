@@ -1,6 +1,6 @@
 {
     "imports": {
-        "areas": {
+        "khasab": {
             "path": "../khasab.json",
             "referenceId": "id"
         }
@@ -25,17 +25,26 @@
     },
     "rules": [{
         "id": "fire test message",
-        "description": "Check the speed of a vehicle",
+        "description": "Check the speed of a vehicle in the CBD area.",
         "recurrence": -1,
         "isActive": true,
-        "conditions": [],
+        "conditions": [{
+            "method": "evaluate",
+            "property": "speed > 5"
+        }, {
+            "method": "inside",
+            "property": {
+                "polyId": "khasab.harbour",
+                "static": true
+            }
+        }],
         "actions": [{
             "method": "sendImbMessage",
             "property": {
                 "publisher": "imb",
                 "topic": "test",
                 "method": "zoomTo",
-                "property": "$location"
+                "property": "$feature"
             }
         }]
     }]
