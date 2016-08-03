@@ -20,10 +20,19 @@ export function run(service: IRuleEngineService, data: ISendImbMessageData) {
   return function (worldState: WorldState) {
     let feature = worldState.updatedFeature;
     if (!feature) return;
-    if (action.property === '$location') {
-      action.property = JSON.stringify(feature.geometry);
+    switch (action.property) {
+      case '$feature':
+        action.property = JSON.stringify(feature);
+        break;
+      case '$location':
+        action.property = JSON.stringify(feature.geometry);
+        break;
+      case '$properties':
+        action.property = JSON.stringify(feature.properties);
+        break;
     }
     service.logger.info(`Publishing feature ${feature.id}`);
+    service.logger.info(`Speed: ${feature.properties['speed']}`);
     publisher.publish(topic, JSON.stringify(action));
   };
 }
