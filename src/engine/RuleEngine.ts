@@ -121,7 +121,7 @@ export class RuleEngine {
    */
   private loadConditionPlugins() {
     // let actionFolder = path.join(__dirname, '../conditions');
-    let conditionsFolder = this.config.actionsFolder;
+    let conditionsFolder = this.config.conditionsFolder;
     if (fs.existsSync(conditionsFolder)) {
       let files = fs.readdirSync(conditionsFolder);
       if (files && files.length > 0) {
@@ -205,6 +205,7 @@ export class RuleEngine {
       ruleFile.rules.forEach(r => {
         if (r.conditions && r.conditions.length > 0) this.attachConditions(r);
         if (r.actions && r.actions.length > 0) this.attachActions(r);
+        this.rules.push(new Rule(r));
       });
     }
   }
@@ -223,7 +224,6 @@ export class RuleEngine {
     });
     if (executableConditions.length === 0) return;
     r.conditions = executableConditions;
-    this.rules.push(new Rule(r));
   }
 
   private attachActions(r: IRule) {
@@ -240,7 +240,6 @@ export class RuleEngine {
     });
     if (executableActions.length === 0) return;
     r.actions = executableActions;
-    this.rules.push(new Rule(r));
   }
 
   private subscribeSinks(publishers: { [key: string]: ISinkConnectorConfig }) {
@@ -364,7 +363,7 @@ export class RuleEngine {
     // this.isBusy = true;
     // Update the set of applicable rules
     let activeRules = this.rules.filter(r => r.isActive);
-    if (activeRules.length) logger.info(`Starting to evaluate ${activeRules.length} rule${activeRules.length > 1 ? 's' : ''}:`);
+    // if (activeRules.length) logger.info(`Starting to evaluate ${activeRules.length} rule${activeRules.length > 1 ? 's' : ''}:`);
     // Process all rules
     this.worldState.updatedFeature = feature;
     activeRules.forEach(r => r.process(this.worldState, this.service));
