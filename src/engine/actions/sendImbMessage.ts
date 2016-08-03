@@ -17,13 +17,13 @@ export function run(service: IRuleEngineService, data: ISendImbMessageData) {
   let action: ISendImbMessageData = Utils.deepClone(data);
   delete action.topic;
   delete action.publisher;
-  return function (worldState: WorldState, activatedFeatures: GeoJSON.Feature<GeoJSON.GeometryObject>[]) {
-    if (!activatedFeatures) return;
-    activatedFeatures.forEach(f => {
-      if (action.property === '$location') {
-        action.property = JSON.stringify(f.geometry);
-      }
-      publisher.publish(topic, JSON.stringify(action));
-    });
+  return function (worldState: WorldState) {
+    let feature = worldState.updatedFeature;
+    if (!feature) return;
+    if (action.property === '$location') {
+      action.property = JSON.stringify(feature.geometry);
+    }
+    service.logger.info(`Publishing feature ${feature.id}`);
+    publisher.publish(topic, JSON.stringify(action));
   };
 }
