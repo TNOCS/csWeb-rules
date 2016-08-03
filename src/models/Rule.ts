@@ -320,7 +320,7 @@ export class Rule implements IRule {
   // }
 
   private executeActions(worldState: WorldState, service: IRuleEngineService) {
-    service.logger.info(`Executing ${this.actions.length} actions:`);
+    service.logger.info(`Executing ${this.actions.length} action${this.actions.length > 1 ? 's' : ''}:`);
     for (let i = 0; i < this.actions.length; i++) {
       var a = this.actions[i];
       service.logger.info(`Executing action: ` + JSON.stringify(a, null, 2));

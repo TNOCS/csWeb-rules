@@ -180,7 +180,7 @@ export class RuleEngine {
         }
       });
       this.isInitialised = true;
-      this.evaluateRules();
+      // this.evaluateRules();
       this.done();
     });
   }
@@ -255,15 +255,18 @@ export class RuleEngine {
     for (let key in subscriptions) {
       if (!subscriptions.hasOwnProperty(key)) continue;
       let config = subscriptions[key];
+      let store = this.worldState.features[key] = {};
       this.router.addSubscription(key, config);
       this.router.on(`update_${key}`, result => {
         let geojson: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = <GeoJSON.FeatureCollection<GeoJSON.GeometryObject>>result;
         if (!geojson || geojson.type !== 'FeatureCollection' || !geojson.features) return;
         geojson.features.forEach(f => {
           let id = this.resolveId(f, config.referenceId) || Utils.newGuid();
-          this.worldState[key][id] = f;
-          this.evaluateRules(f);
+          f.id = id;
+          store[id] = f;
+          this.featureQueue.push(f);
         });
+        this.evaluateRules();
       });
     }
   }
@@ -350,23 +353,26 @@ export class RuleEngine {
   }
 
   evaluateRules(feature?: GeoJSON.Feature<GeoJSON.GeometryObject>) {
-    if (this.isBusy) {
-      logger.warn('Added feature ${feature.id} to the queue (#items: $this.featureQueue.length}).');
-      this.featureQueue.push(feature);
-      return;
-    }
-    this.isBusy = true;
+    if (this.isBusy) return;
+    if (!feature && this.featureQueue.length > 0) feature = this.featureQueue.shift();
+    // if (this.isBusy) {
+    //   logger.warn('Added feature ${feature.id} to the queue (#items: $this.featureQueue.length}).');
+    //   this.featureQueue.push(feature);
+    //   return;
+    // }
+    //console.log(`Evaluating rules: ` + JSON.stringify(feature));
+    // this.isBusy = true;
     // Update the set of applicable rules
-    let activeRules = this.rules.filter(r => r.isActive && r.recurrence > 0);
-    if (activeRules.length) logger.info(`Starting to evaluate ${activeRules.length} rules:`);
+    let activeRules = this.rules.filter(r => r.isActive);
+    if (activeRules.length) logger.info(`Starting to evaluate ${activeRules.length} rule${activeRules.length > 1 ? 's' : ''}:`);
     // Process all rules
     this.worldState.updatedFeature = feature;
     activeRules.forEach(r => r.process(this.worldState, this.service));
-    this.isBusy = false;
     if (this.featureQueue.length > 0) {
       this.evaluateRules(this.featureQueue.shift());
     } else {
-      //logger.log('Ready evaluating rules...');
+      this.isBusy = false;
+      logger.info('Ready evaluating rules... waiting for updates.');
     }
   }
 
