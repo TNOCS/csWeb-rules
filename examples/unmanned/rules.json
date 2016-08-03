@@ -1,16 +1,16 @@
 {
     "imports": {
         "areas": {
-            "path": "../imports/provinces.json",
-            "referenceId": "Provincien"
+            "path": "../khasab.json",
+            "referenceId": "id"
         }
     },
     "subscribers": {
         "tracks": {
             "type": "REST",
-            "host": "localhost",
-            "port": 9000,
-            "refreshInterval": 5
+            "path": "localhost:9000/api/HlaEntities",
+            "referenceId": "hlaIdentifier",
+            "refreshIntervalMSec": 5000
         }
     },
     "publishers": {
@@ -26,7 +26,7 @@
     "rules": [{
         "id": "fire test message",
         "description": "Check the speed of a vehicle",
-        "recurrence": 10,
+        "recurrence": -1,
         "isActive": true,
         "conditions": [],
         "actions": [{

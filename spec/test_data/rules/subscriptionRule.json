@@ -2,8 +2,8 @@
     "subscribers": {
         "google": {
             "type": "REST",
-            "host": "http://www.google.nl",
-            "refreshInterval": -1
+            "path": "http://www.google.nl",
+            "refreshIntervalMSec": -1
         }
     }
 }
