@@ -14,8 +14,21 @@ import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
  * @enum {number}
  */
 export enum RuleActivationType {
+  /**
+   * Fire when entering
+   */
   OnEnter,
+  /**
+   * Fire when exeting
+   */
   OnExit,
+  /**
+   * Fire when entering or exiting
+   */
+  OnChange,
+  /**
+   * Fire every time the rules are evaluated
+   */
   Continuously
 }
 
@@ -173,6 +186,7 @@ export class Rule implements IRule {
         case RuleActivationType.Continuously:
           this.executeActions(worldState, service);
           break;
+        case RuleActivationType.OnChange:
         case RuleActivationType.OnEnter:
           if (!this.activatedFeatureIds.some(f => { return f === id; })) {
             this.executeActions(worldState, service);
@@ -183,7 +197,7 @@ export class Rule implements IRule {
           this.activatedFeatureIds.push(id);
           break;
       }
-    } else if (this.activationType === RuleActivationType.OnExit) {
+    } else if (this.activationType === RuleActivationType.OnExit || this.activationType === RuleActivationType.OnChange) {
       let index = this.activatedFeatureIds.indexOf(id);
       if (index >= 0) {
         this.executeActions(worldState, service);
@@ -323,7 +337,7 @@ export class Rule implements IRule {
     service.logger.info(`Executing ${this.actions.length} action${this.actions.length > 1 ? 's' : ''}:`);
     for (let i = 0; i < this.actions.length; i++) {
       var a = this.actions[i];
-      service.logger.info(`Executing action: ` + JSON.stringify(a, null, 2));
+      service.logger.info(`Executing action for active feature ${worldState.updatedFeature.id}: ` + JSON.stringify(a, null, 2));
       a.run(worldState);
       // var method = a.method;
       // var key: string | number | boolean;
