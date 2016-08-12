@@ -19,7 +19,7 @@
             "type": "IMB",
             "host": "localhost",
             "port": 4000,
-            "federation": "TNOdemo",
+            "federation": "UST",
             "name": "csWeb-rules"
         }
     },
@@ -42,9 +42,12 @@
             "method": "sendImbMessage",
             "property": {
                 "publisher": "imb",
-                "topic": "test",
+                "topic": "Unmanned",
                 "method": "zoomTo",
-                "property": "$feature"
+                "property": {
+                    "message": "Vehicle speed limit in the harbour is exceeded",
+                    "attach": "$feature"
+                }
             }
         }]
     }]
