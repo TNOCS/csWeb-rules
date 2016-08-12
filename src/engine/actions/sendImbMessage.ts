@@ -20,15 +20,15 @@ export function run(service: IRuleEngineService, data: ISendImbMessageData) {
   return function (worldState: WorldState) {
     let feature = worldState.updatedFeature;
     if (!feature) return;
-    switch (action.property) {
+    switch (data.property['attach']) {
       case '$feature':
-        action.property = JSON.stringify(feature);
+        action.property['attach'] = feature;
         break;
       case '$location':
-        action.property = JSON.stringify(feature.geometry);
+        action.property['attach'] = feature.geometry;
         break;
       case '$properties':
-        action.property = JSON.stringify(feature.properties);
+        action.property['attach'] = feature.properties;
         break;
     }
     service.logger.info(`Publishing feature ${feature.id}`);
