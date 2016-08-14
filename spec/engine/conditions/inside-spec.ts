@@ -81,6 +81,12 @@ describe('Inside condition', () => {
     expect(conditionChecker).toBeUndefined();
   });
 
+  it('should fail badly defined featureIds', () => {
+    data.featureId = 'areasnais';
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker).toBeUndefined();
+  });
+
   it('should fail non-existing polyIds', () => {
     worldState.updatedFeature = inside;
     data.polyId = 'areas.unknownNais';
@@ -88,7 +94,7 @@ describe('Inside condition', () => {
     expect(conditionChecker(worldState)).toBeFalsy();
   });
 
-  it('should recognize points inside the area', () => {
+  it('should recognize updatedFeature inside the area', () => {
     worldState.updatedFeature = inside;
     let conditionChecker = evaluate(service, data);
     expect(conditionChecker(worldState)).toBeTruthy();
@@ -97,8 +103,30 @@ describe('Inside condition', () => {
     expect(conditionChecker(worldState)).toBeTruthy();
   });
 
-  it('should recognize points outside the area', () => {
+  it('should recognize points inside the area', () => {
+    worldState.updatedFeature = undefined;
+    worldState.features['areas']['fid'] = inside;
+    data.featureId = 'areas.fid';
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeTruthy();
+    data.static = true;
+    conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeTruthy();
+  });
+
+  it('should recognize updatedFeature outside the area', () => {
     worldState.updatedFeature = outside;
+    let conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeFalsy();
+    data.static = true;
+    conditionChecker = evaluate(service, data);
+    expect(conditionChecker(worldState)).toBeFalsy();
+  });
+
+  it('should recognize points outside the area', () => {
+    worldState.updatedFeature = undefined;
+    worldState.features['areas']['fid'] = outside;
+    data.featureId = 'areas.fid';
     let conditionChecker = evaluate(service, data);
     expect(conditionChecker(worldState)).toBeFalsy();
     data.static = true;
