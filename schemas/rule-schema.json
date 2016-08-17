@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Rule schema.",
+    "description": "Describes a rule, which consists of zero or more conditions that must be evaluated to true in order to trigger the one or more actions",
+    "properties": {
+        "id": {
+            "type": "string",
+            "title": "Id schema.",
+            "description": "Unique identifier (name) of the rule.",
+            "id": "id"
+        },
+        "description": {
+            "type": "string",
+            "title": "Description schema.",
+            "description": "Description of the rule's purpose. Solely used for documentation purposes.",
+            "id": "description"
+        },
+        "recurrence": {
+            "type": "integer",
+            "minimum": -1,
+            "default": -1,
+            "title": "Recurrence schema.",
+            "description": "How often may the rule fire. In case the value is -1, fire continuously.",
+            "id": "recurrence"
+        },
+        "isActive": {
+            "type": "boolean",
+            "default": true,
+            "title": "IsActive schema.",
+            "description": "A rule may start active, meaning it will be evaluated every time, or inactive, waiting for activation to occur.",
+            "id": "isActive"
+        },
+        "conditions": {
+            "type": "array",
+            "title": "Conditions schema.",
+            "description": "An array of AND conditions: each condition must be evaluated to true in order to trigger the actions in the rule.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "method": {
+                        "enum": [
+                            "evaluate",
+                            "inside"
+                        ],
+                        "description": "Name of the method."
+                    },
+                    "property": {
+                        "type": "object",
+                        "oneOf": [{
+                            "$ref": "#/definitions/evaluate-condition"
+                        }, {
+                            "$ref": "#/definitions/inside-condition"
+                        }]
+                    }
+                }
+            }
+        },
+        "actions": {
+            "type": "array",
+            "title": "Actions schema.",
+            "description": "",
+            "items": {
+                "type": "object",
+                "title": "0 schema.",
+                "description": "",
+                "properties": {
+                    "method": {
+                        "type": "string",
+                        "title": "Method schema.",
+                        "description": "",
+                        "id": "method"
+                    },
+                    "property": {
+                        "type": "object",
+                        "title": "Property schema.",
+                        "description": "",
+                        "properties": {
+                            "publisher": {
+                                "type": "string",
+                                "title": "Publisher schema.",
+                                "description": "",
+                                "id": "publisher"
+                            },
+                            "topic": {
+                                "type": "string",
+                                "title": "Topic schema.",
+                                "description": "",
+                                "id": "topic"
+                            },
+                            "method": {
+                                "type": "string",
+                                "title": "Method schema.",
+                                "description": "",
+                                "id": "method"
+                            },
+                            "property": {
+                                "type": "object",
+                                "title": "Property schema.",
+                                "description": "",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "title": "Message schema.",
+                                        "description": "",
+                                        "id": "message"
+                                    },
+                                    "attach": {
+                                        "type": "string",
+                                        "title": "Attach schema.",
+                                        "description": "",
+                                        "id": "attach"
+                                    }
+                                },
+                                "id": "property",
+                                "required": [
+                                    "message",
+                                    "attach"
+                                ]
+                            }
+                        },
+                        "id": "property",
+                        "required": [
+                            "publisher",
+                            "topic",
+                            "method",
+                            "property"
+                        ]
+                    }
+                },
+                "id": "0",
+                "required": [
+                    "method",
+                    "property"
+                ]
+            },
+            "id": "actions"
+        }
+    },
+    "id": "/",
+    "required": [
+        "id",
+        "recurrence",
+        "isActive",
+        "actions"
+    ],
+    "definitions": {
+        "evaluate-condition": {
+            "type": "object"
+        },
+        "inside-condition": {
+
+        }
+    }
+}

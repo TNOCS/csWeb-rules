@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Root schema.",
+    "description": "",
+    "properties": {
+        "imports": {
+            "type": "object",
+            "patternProperties": {
+                "^\\w+$": {
+                    "$ref": "./import-schema.json"
+                }
+            },
+            "additionalProperties": false
+        },
+        "subscribers": {
+            "type": "object",
+            "patternProperties": {
+                "^\\w+$": {
+                    "$ref": "./subscriber-schema.json"
+                }
+            },
+            "additionalProperties": false
+        },
+        "publishers": {
+            "type": "object",
+            "patternProperties": {
+                "^\\w+$": {
+                    "$ref": "./publisher-schema.json"
+                }
+            },
+            "additionalProperties": false
+        },
+        "rules": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "patternProperties": {
+                    "^\\w+$": {
+                        "$ref": "./rule-schema.json"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "uniqueItems": true
+        }
+    },
+    "id": "/",
+    "required": [
+        "subscribers",
+        "publishers",
+        "rules"
+    ],
+}

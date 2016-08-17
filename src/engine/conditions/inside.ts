@@ -26,6 +26,33 @@ export interface IBoundaryCondition {
   featureId?: string;
 }
 
+/**
+ * Check whether a POINT feature is inside a POLYGON feature.
+ *
+ * The polyId property is required, and specifies the ID of the POLYGON feature.
+ *
+ * When the static option is set, it means that we have imported the POLYGON feature,
+ * and we can optimize the code a bit.
+ *
+ * When the featureId property is set, we don't use the worldState's updatedFeature,
+ * but an existing feature instead. In this way, we can use it for more complicated
+ * scenario's, e.g. check when a feature is inside AREA 1 and another feature is in
+ * AREA 2.
+ *
+ * {
+ *   "method": "inside",
+ *   "property": {
+ *     "polyId": "khasab.harbour",
+ *     "featureId": "tracks.uav",
+ *     "static": true
+ *    }
+ * }
+ *
+ * @export
+ * @param {IRuleEngineService} service
+ * @param {IBoundaryCondition} data
+ * @returns
+ */
 export function evaluate(service: IRuleEngineService, data: IBoundaryCondition) {
   if (!data || !data.polyId) {
     service.logger.error('Cannot evaluate empty rule!');

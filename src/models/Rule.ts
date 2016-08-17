@@ -129,7 +129,7 @@ export class Rule implements IRule {
   /**
    * Feature IDs that have been activated by the rule.
    * We keep track of them as we need to determine whether we should fire the
-   * rule onEnter or onExit (in continuous mode, this is not relevant).
+   * rule onEnter, onExit or onChange (in continuous mode, this is not relevant).
    *
    * @type {string[]}
    */

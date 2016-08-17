@@ -1,4 +1,5 @@
 {
+    "$schema": "../../schemas/rules-schema.json",
     "imports": {
         "khasab": {
             "path": "../khasab.json",
@@ -24,7 +25,7 @@
         }
     },
     "rules": [{
-        "id": "fire test message",
+        "id": "Speed check",
         "description": "Check the speed of a vehicle in the CBD area.",
         "recurrence": -1,
         "isActive": true,

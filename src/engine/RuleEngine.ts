@@ -57,8 +57,8 @@ export class RuleEngine {
   router: Router = new Router();
   /** A set of rules. */
   private rules: IRule[] = [];
-  // /** A set of rules that are active but have not yet fired. */
-  // private activeRules: IRule[] = [];
+  /** A set of rules that are active but have not yet fired. */
+  private activeRules: IRule[] = [];
   // /** A set of rules that are inactive and may become activated. */
   // private inactiveRules: IRule[] = [];
   // /** A set of rules to activate at the end of the rule evaluation cycle */
@@ -267,7 +267,7 @@ export class RuleEngine {
         });
         this.evaluateRules();
       });
-    }
+b    }
   }
 
   /**
@@ -277,12 +277,17 @@ export class RuleEngine {
    * @return {void}
    */
   activateRule(ruleId: string) {
-    for (let i = 0, length = this.rules.length; i < length; i++) {
-      var rule = this.rules[i];
-      if (rule.id !== ruleId) continue;
-      rule.isActive = true;
-      return;
-    }
+    this.rules.some(r => {
+      return r.id === ruleId
+        ? ((r.isActive = true), true)
+        : false;
+      });
+    // for (let i = 0, length = this.rules.length; i < length; i++) {
+    //   var rule = this.rules[i];
+    //   if (rule.id !== ruleId) continue;
+    //   rule.isActive = true;
+    //   return;
+    // }
   }
 
   /**
@@ -292,12 +297,17 @@ export class RuleEngine {
    * @return {void}
    */
   deactivateRule(ruleId: string) {
-    for (let i = 0, length = this.rules.length; i < length; i++) {
-      var rule = this.rules[i];
-      if (rule.id !== ruleId) continue;
-      rule.isActive = false;
-      return;
-    }
+    this.rules.some(r => {
+      return r.id === ruleId
+        ? ((r.isActive = false), true)
+        : false;
+      });
+    // for (let i = 0, length = this.rules.length; i < length; i++) {
+    //   var rule = this.rules[i];
+    //   if (rule.id !== ruleId) continue;
+    //   rule.isActive = false;
+    //   return;
+    //}
   }
 
   private importGeoJSON(ns: string, folder: string, fileReference: { path: string, referenceId?: string }) {
@@ -312,16 +322,6 @@ export class RuleEngine {
     let importedFeatures: { [id: string]: GeoJSON.Feature<GeoJSON.GeometryObject> } = {};
     geojson.features.forEach(f => {
       let id = this.resolveId(f, fileReference.referenceId);
-      // let id = (fileReference.referenceId && f.properties && f.properties.hasOwnProperty(fileReference.referenceId))
-      //   ? f.properties[fileReference.referenceId]
-      //   : f.id;
-      // if (!id && f.properties) {
-      //   if (f.properties.hasOwnProperty['Name']) {
-      //     id = f.properties['Name'];
-      //   } else if (f.properties.hasOwnProperty['name']) {
-      //     id = f.properties['name'];
-      //   }
-      // }
       if (!id) {
         logger.error(`Error importing feature from ${importFile}: feature has no key (id, name or Name property)! Feature:\n ${JSON.stringify(f, null, 2)}`);
         return;
@@ -361,16 +361,16 @@ export class RuleEngine {
     // }
     //console.log(`Evaluating rules: ` + JSON.stringify(feature));
     // this.isBusy = true;
-    // Update the set of applicable rules
-    let activeRules = this.rules.filter(r => r.isActive);
     // if (activeRules.length) logger.info(`Starting to evaluate ${activeRules.length} rule${activeRules.length > 1 ? 's' : ''}:`);
     // Process all rules
     this.worldState.updatedFeature = feature;
-    activeRules.forEach(r => r.process(this.worldState, this.service));
+    this.activeRules.forEach(r => r.process(this.worldState, this.service));
     if (this.featureQueue.length > 0) {
       this.evaluateRules(this.featureQueue.shift());
     } else {
       this.isBusy = false;
+      // Update the set of applicable rules
+      this.activeRules = this.rules.filter(r => r.isActive);
       logger.info('Ready evaluating rules... waiting for updates.');
     }
   }
