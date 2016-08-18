@@ -55,6 +55,13 @@ export class RuleEngine {
   loadedRuleFiles: string[] = [];
   isInitialised = false;
   router: Router = new Router();
+  /**
+   * Default timer.
+   *
+   * @type {HyperTimer}
+   */
+  timer: HyperTimer = new HyperTimer();
+
   /** A set of rules. */
   private rules: IRule[] = [];
   /** A set of rules that are active but have not yet fired. */
@@ -103,9 +110,10 @@ export class RuleEngine {
     // this.service.layer = this.layer;
     this.service.activateRule = (ruleId: string) => this.activateRule(ruleId);
     this.service.deactivateRule = (ruleId: string) => this.deactivateRule(ruleId);
-    this.service.timer = new HyperTimer();
     this.service.router = this.router;
     this.service.logger = logger;
+    this.service.timer = this.timer;
+    this.worldState.startTime = this.timer.getTime();
 
     if (this.config.rulesFolder) {
       // if (!path.isAbsolute(this.config.rulesFolder)) this.config.rulesFolder = path.join(process.cwd(), this.config.rulesFolder);

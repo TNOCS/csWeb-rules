@@ -4,8 +4,6 @@ import {Utils} from '../helpers/Utils';
 export interface IWorldState {
   /** Time the world state was created */
   startTime?: Date;
-  /** The current time */
-  currentTime?: Date;
   /** A bag of key-value properties */
   properties?: IProperty[];
   /** List of all features, preceded by a namespace, typically of the source */
@@ -22,8 +20,6 @@ export interface IWorldState {
 export class WorldState implements IWorldState {
   /** Time the world state was created */
   startTime: Date = new Date();
-  /** The current time */
-  currentTime: Date = this.startTime;
   /** A bag of key-value properties */
   properties: IProperty[] = [];
   /** List of all features, preceded by a namespace, typically of the source */
@@ -37,7 +33,6 @@ export class WorldState implements IWorldState {
   constructor(ws?: WorldState) {
     if (!ws) return;
     this.startTime = ws.startTime;
-    this.currentTime = ws.currentTime;
     this.properties = ws.properties;
     this.features = ws.features;
     this.updatedFeature = Utils.deepClone(ws.updatedFeature);
