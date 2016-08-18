@@ -34,13 +34,13 @@ describe('A Rule', () => {
       activationType: RuleActivationType.OnExit,
       actions: [action]
     });
-    rule.process(worldState, service );
+    rule.process(worldState, service);
     expect(effect).toBeFalsy();
     rule.conditions = [{
       method: 'dummy',
       evaluate: () => { return false; }
     }];
-    rule.process(worldState, service );
+    rule.process(worldState, service);
     expect(effect).toBeTruthy();
   });
 
@@ -52,15 +52,33 @@ describe('A Rule', () => {
       activationType: RuleActivationType.OnEnter,
       actions: [action]
     });
-    rule.process(worldState, service );
+    rule.process(worldState, service);
     expect(effect).toBeTruthy();
     effect = false;
     rule.conditions = [{
       method: 'dummy',
       evaluate: () => { return false; }
     }];
-    rule.process(worldState, service );
+    rule.process(worldState, service);
     expect(effect).toBeFalsy();
+  });
+
+  it('should respect OnChange activation type', () => {
+    let rule = new Rule({
+      isActive: true,
+      isGeneric: true,
+      recurrence: 1,
+      activationType: RuleActivationType.OnChange,
+      actions: [action]
+    });
+    rule.process(worldState, service);
+    expect(effect).toBeTruthy();
+    rule.conditions = [{
+      method: 'dummy',
+      evaluate: () => { return false; }
+    }];
+    rule.process(worldState, service);
+    expect(effect).toBeTruthy();
   });
 
   it('should respect Continuously activation type', () => {

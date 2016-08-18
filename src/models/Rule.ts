@@ -468,10 +468,10 @@ export class Rule implements IRule {
     // service.updateFeature(f);
   }
 
-  /** Get the delay, if present, otherwise return 0 */
-  private getDelay(action: IAction) {
-    return action.delay
-      ? +action.delay * 1000
-      : 0;
-  }
+  // /** Get the delay, if present, otherwise return 0 */
+  // private getDelay(action: IAction) {
+  //   return action.delayInMSec
+  //     ? +action.delayInMSec * 1000
+  //     : 0;
+  // }
 }

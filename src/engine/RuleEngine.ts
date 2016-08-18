@@ -228,6 +228,7 @@ export class RuleEngine {
 
   private attachActions(r: IRule) {
     let executableActions: IAction[] = [];
+    let timer = this.service.timer;
     r.actions.forEach(a => {
       if (!a.method) return;
       let plugin = this.actions[a.method.toLowerCase()];
@@ -235,7 +236,13 @@ export class RuleEngine {
         logger.warn(`Action ${a.method} not found in rule ${r.id}! Skipping.`);
         return;
       }
-      a.run = plugin.run(this.service, a.property);
+      let run = plugin.run(this.service, a.property);
+      a.run = a.delayInMSec
+        ? function(worldState: WorldState) {
+          let ws = new WorldState(worldState);
+          timer.setTimeout(() => run(ws), a.delayInMSec);
+        }
+        : run;
       executableActions.push(a);
     });
     if (executableActions.length === 0) return;

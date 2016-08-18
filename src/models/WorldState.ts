@@ -1,4 +1,5 @@
 import {IProperty} from '../models/Feature';
+import {Utils} from '../helpers/Utils';
 
 export interface IWorldState {
   /** Time the world state was created */
@@ -32,4 +33,13 @@ export class WorldState implements IWorldState {
    * In case it is undefined, you can only evaluate the non-feature specific rules.
    */
   updatedFeature: GeoJSON.Feature<GeoJSON.GeometryObject>;
+
+  constructor(ws?: WorldState) {
+    if (!ws) return;
+    this.startTime = ws.startTime;
+    this.currentTime = ws.currentTime;
+    this.properties = ws.properties;
+    this.features = ws.features;
+    this.updatedFeature = Utils.deepClone(ws.updatedFeature);
+  }
 }

@@ -14,9 +14,27 @@ export interface IActionPlugin {
 }
 
 export interface IAction {
+    /**
+     * The method to execute. Typically is matched with a Javascript library that can be run.
+     *
+     * @type {string}
+     */
     method: string;
+    /**
+     * Property string or object that contains the specific properties for this method.
+     *
+     * @type {(string | Object)}
+     */
     property?: string | Object;
-    delay?: number;
+    /**
+     * Before triggering the action, wait for delayInMSec microseconds.
+     *
+     * @type {number}
+     */
+    delayInMSec?: number;
+    /**
+     * Internal function to actually execute the action.
+     */
     run?: (worldState: WorldState) => void;
 }
 

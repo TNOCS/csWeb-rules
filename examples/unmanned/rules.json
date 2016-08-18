@@ -41,6 +41,7 @@
         }],
         "actions": [{
             "method": "sendImbMessage",
+            "delayInMSec": 1000,
             "property": {
                 "publisher": "imb",
                 "topic": "Unmanned",

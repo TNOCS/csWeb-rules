@@ -86,13 +86,17 @@
             "description": "An array of actions: each action is executed when the rule is triggered.",
             "items": {
                 "type": "object",
-                "description": "A sinle action",
+                "description": "A single action",
                 "properties": {
                     "method": {
                         "enum": [
                             "sendImbMessage"
                         ],
                         "description": "Type of action."
+                    },
+                    "delayInMSec": {
+                        "type": "number",
+                        "description": "Delay in milliseconds before triggering the action."
                     },
                     "property": {
                         "oneOf": [{
