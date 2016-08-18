@@ -80,7 +80,7 @@ export interface IRule {
    * i.e. not tied to a specific feature.
    * @type {boolean}
    */
-  isGenericRule?: boolean;
+  isGeneric?: boolean;
   /**
    * Determines when the rule should be activated.
    *
@@ -120,7 +120,7 @@ export class Rule implements IRule {
    * @type {RuleActivationType}
    */
   activationType: RuleActivationType;
-  isGenericRule: boolean;
+  isGeneric: boolean;
   /** The rule can only be fired when it is active. */
   isActive: boolean;
   /** How many times can the rule be fired: -1 is indefinetely, default is once */
@@ -154,9 +154,9 @@ export class Rule implements IRule {
     this.isActive = (typeof rule.isActive === 'undefined')
       ? true
       : rule.isActive;
-    this.isGenericRule = (typeof rule.isGenericRule === 'undefined')
+    this.isGeneric = (typeof rule.isGeneric === 'undefined')
       ? false
-      : rule.isGenericRule;
+      : rule.isGeneric;
     if (this.isActive && typeof rule.activatedAt === 'undefined') this.activatedAt = activationTime;
     this.activationType = rule.activationType || RuleActivationType.Continuously;
     if (this.activationType !== RuleActivationType.Continuously) {
@@ -174,7 +174,7 @@ export class Rule implements IRule {
     if (!this.isActive || this.recurrence === 0) return;
     if (!worldState.updatedFeature) return;
     // Check if we are dealing with a rule that belongs to a feature, and that feature is being processed.
-    if (!this.isGenericRule
+    if (!this.isGeneric
       && typeof this.featureId !== 'undefined'
       && worldState.updatedFeature.id !== this.featureId) return;
     // Finally, check the conditions, if any (if none, just go ahead and execute the actions)

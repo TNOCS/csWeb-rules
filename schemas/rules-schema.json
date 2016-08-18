@@ -6,6 +6,7 @@
     "properties": {
         "imports": {
             "type": "object",
+            "description": "Specifies all imported GeoJSON files.",
             "patternProperties": {
                 "^\\w+$": {
                     "$ref": "./import-schema.json"
@@ -15,6 +16,7 @@
         },
         "subscribers": {
             "type": "object",
+            "description": "Specifies all subscribers.",
             "patternProperties": {
                 "^\\w+$": {
                     "$ref": "./subscriber-schema.json"
@@ -24,6 +26,7 @@
         },
         "publishers": {
             "type": "object",
+            "description": "Specifies all publishers",
             "patternProperties": {
                 "^\\w+$": {
                     "$ref": "./publisher-schema.json"
@@ -33,15 +36,10 @@
         },
         "rules": {
             "type": "array",
+            "description": "Specifies all rules.",
             "minItems": 1,
             "items": {
-                "type": "object",
-                "patternProperties": {
-                    "^\\w+$": {
-                        "$ref": "./rule-schema.json"
-                    }
-                },
-                "additionalProperties": false
+                "$ref": "./rule-schema.json"
             },
             "uniqueItems": true
         }

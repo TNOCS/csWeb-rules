@@ -267,7 +267,7 @@ export class RuleEngine {
         });
         this.evaluateRules();
       });
-b    }
+    }
   }
 
   /**

@@ -29,7 +29,7 @@ describe('A Rule', () => {
   it('should respect OnExit activation type', () => {
     let rule = new Rule({
       isActive: true,
-      isGenericRule: true,
+      isGeneric: true,
       recurrence: 1,
       activationType: RuleActivationType.OnExit,
       actions: [action]
@@ -47,7 +47,7 @@ describe('A Rule', () => {
   it('should respect OnEnter activation type', () => {
     let rule = new Rule({
       isActive: true,
-      isGenericRule: true,
+      isGeneric: true,
       recurrence: 1,
       activationType: RuleActivationType.OnEnter,
       actions: [action]
@@ -66,7 +66,7 @@ describe('A Rule', () => {
   it('should respect Continuously activation type', () => {
     let rule = new Rule({
       isActive: true,
-      isGenericRule: true,
+      isGeneric: true,
       recurrence: 2,
       activationType: RuleActivationType.Continuously,
       actions: [action]
@@ -88,7 +88,7 @@ describe('A Rule', () => {
   it('should respect the rule\'s recurrence', () => {
     let rule = new Rule({
       isActive: true,
-      isGenericRule: true,
+      isGeneric: true,
       recurrence: 2,
       activationType: RuleActivationType.Continuously,
       actions: [action]
