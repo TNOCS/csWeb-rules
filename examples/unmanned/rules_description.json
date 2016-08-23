@@ -1,4 +1,5 @@
 {
+    // In case you have a smart editor, you can use this schema to facilitate editing as you get auto-completion and descriptions.
     "$schema": "../../schemas/rules-schema.json",
     "imports": {
         "khasab": {
