@@ -9,28 +9,8 @@ import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
 
 /**
  * When should the rule be activated.
- *
- * @export
- * @enum {number}
  */
-export enum RuleActivationType {
-  /**
-   * Fire when entering
-   */
-  OnEnter,
-  /**
-   * Fire when exeting
-   */
-  OnExit,
-  /**
-   * Fire when entering or exiting
-   */
-  OnChange,
-  /**
-   * Fire every time the rules are evaluated
-   */
-  Continuously
-}
+export type RuleActivationType = 'OnEnter' | 'OnExit' | 'OnChange' | 'Continuously';
 
 /** Input file for rules */
 export interface IRuleFile {
@@ -158,8 +138,8 @@ export class Rule implements IRule {
       ? false
       : rule.isGeneric;
     if (this.isActive && typeof rule.activatedAt === 'undefined') this.activatedAt = activationTime;
-    this.activationType = rule.activationType || RuleActivationType.Continuously;
-    if (this.activationType !== RuleActivationType.Continuously) {
+    this.activationType = rule.activationType || 'Continuously';
+    if (this.activationType !== 'Continuously') {
       this.activatedFeatureIds = [];
     }
     this.recurrence = rule.recurrence || 1;
@@ -183,21 +163,21 @@ export class Rule implements IRule {
       || this.conditions.length === 0
       || this.evaluateConditions(worldState)) {
       switch (this.activationType) {
-        case RuleActivationType.Continuously:
+        case 'Continuously':
           this.executeActions(worldState, service);
           break;
-        case RuleActivationType.OnChange:
-        case RuleActivationType.OnEnter:
+        case 'OnChange':
+        case 'OnEnter':
           if (!this.activatedFeatureIds.some(f => { return f === id; })) {
             this.executeActions(worldState, service);
           }
           this.activatedFeatureIds.push(id);
           break;
-        case RuleActivationType.OnExit:
+        case 'OnExit':
           this.activatedFeatureIds.push(id);
           break;
       }
-    } else if (this.activationType === RuleActivationType.OnExit || this.activationType === RuleActivationType.OnChange) {
+    } else if (this.activationType === 'OnExit' || this.activationType === 'OnChange') {
       let index = this.activatedFeatureIds.indexOf(id);
       if (index >= 0) {
         this.executeActions(worldState, service);
