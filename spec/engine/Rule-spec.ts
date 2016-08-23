@@ -31,7 +31,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 1,
-      activationType: 'OnExit',
+      activationType: RuleActivationType.OnExit,
       actions: [action]
     });
     rule.process(worldState, service);
@@ -49,7 +49,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 1,
-      activationType: 'OnEnter',
+      activationType: RuleActivationType.OnEnter,
       actions: [action]
     });
     rule.process(worldState, service);
@@ -68,7 +68,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 1,
-      activationType: 'OnChange',
+      activationType: RuleActivationType.OnChange,
       actions: [action]
     });
     rule.process(worldState, service);
@@ -86,7 +86,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 2,
-      activationType: 'Continuously',
+      activationType: RuleActivationType.Continuously,
       actions: [action]
     });
     rule.process(worldState, service );
@@ -108,7 +108,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 2,
-      activationType: 'Continuously',
+      activationType: RuleActivationType.Continuously,
       actions: [action]
     });
     rule.process(worldState, service );
