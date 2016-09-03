@@ -86,7 +86,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 2,
-      activationType: 'Continuously',
+      activationType: 'Continuous',
       actions: [action]
     });
     rule.process(worldState, service );
@@ -108,7 +108,7 @@ describe('A Rule', () => {
       isActive: true,
       isGeneric: true,
       recurrence: 2,
-      activationType: 'Continuously',
+      activationType: 'Continuous',
       actions: [action]
     });
     rule.process(worldState, service );

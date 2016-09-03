@@ -10,7 +10,7 @@ import {ISinkConnectorConfig} from '../router/connectors/SinkConnector';
 /**
  * When should the rule be activated.
  */
-export type RuleActivationType = 'OnEnter' | 'OnExit' | 'OnChange' | 'Continuously';
+export type RuleActivationType = 'OnEnter' | 'OnExit' | 'OnChange' | 'Continuous' | 'Manual';
 
 /** Input file for rules */
 export interface IRuleFile {
@@ -138,8 +138,8 @@ export class Rule implements IRule {
       ? false
       : rule.isGeneric;
     if (this.isActive && typeof rule.activatedAt === 'undefined') this.activatedAt = activationTime;
-    this.activationType = rule.activationType || 'Continuously';
-    if (this.activationType !== 'Continuously') {
+    this.activationType = rule.activationType || 'Continuous';
+    if (this.activationType !== 'Continuous') {
       this.activatedFeatureIds = [];
     }
     this.recurrence = rule.recurrence || 1;
@@ -163,7 +163,7 @@ export class Rule implements IRule {
       || this.conditions.length === 0
       || this.evaluateConditions(worldState)) {
       switch (this.activationType) {
-        case 'Continuously':
+        case 'Continuous':
           this.executeActions(worldState, service);
           break;
         case 'OnChange':
