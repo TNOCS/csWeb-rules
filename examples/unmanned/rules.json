@@ -9,7 +9,7 @@
     "subscribers": {
         "tracks": {
             "type": "REST",
-            "path": "localhost:9000/api/HlaEntities",
+            "path": "http://127.0.0.1:9000/api/HlaEntities",
             "referenceId": "hlaIdentifier",
             "refreshIntervalMSec": 5000
         }
@@ -25,24 +25,13 @@
         }
     },
     "rules": [{
-        "id": "Speed check",
-        "description": "Check the speed of a vehicle in the CBD area.",
+        "id": "Run 1: event 1",
+        "description": "Truck approaches sensitive RoI",
         "recurrence": -1,
         "isActive": true,
-        "activationType": "OnEnter",
-        "conditions": [{
-            "method": "evaluate",
-            "property": "speed > 15"
-        }, {
-            "method": "inside",
-            "property": {
-                "polyId": "khasab.harbour",
-                "static": true
-            }
-        }],
+        "activationType": "Manual",
         "actions": [{
             "method": "sendImbMessage",
-            "delayInMSec": 10,
             "property": {
                 "publisher": "imb",
                 "topic": "Unmanned",
@@ -51,26 +40,243 @@
                     "header": "",
                     "optionsYesNo": false,
                     "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
-                    "autoSwitchInSeconds": 5,
+                    "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
-                    "attach": "$feature"
+                    "message": "Auto switch in {0:0} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.240626,
+                                26.165764
+                            ]
+                        }
+                    }
                 }
             }
-        }, {
+        }]
+    }, {
+        "id": "Run 1: event 2",
+        "description": "Roadblock (explicit)",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
             "method": "sendImbMessage",
-            "delayInMSec": 1000,
             "property": {
                 "publisher": "imb",
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "Attention request",
-                    "optionsYesNo": true,
-                    "relativeImageUri": "images/ADA CONCEPT dummy.png",
-                    "backgroundColorRgb": "0, 0, 255",
-                    "message": "",
-                    "attach": "$feature"
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.247179,
+                                26.170154
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 1: event 4",
+        "description": "Hostile gathering civilians",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.199079,
+                                26.126598
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 1: event ?",
+        "description": "Gathering hostile vehicles",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.247055,
+                                26.176094
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 3: event 5",
+        "description": "Gathering hostile persons by the mosque",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.245849,
+                                26.172072
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 3: event 8",
+        "description": "Hostile group 2, walking",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.246514,
+                                26.182236
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 3: event 11",
+        "description": "IED box explodes",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.247163,
+                                26.177591
+                            ]
+                        }
+                    }
+                }
+            }
+        }]
+    }, {
+        "id": "Run 3: event 15",
+        "description": "Hostile vehicles break the roadblock and drive towards embassy",
+        "recurrence": -1,
+        "isActive": true,
+        "activationType": "Manual",
+        "actions": [{
+            "method": "sendImbMessage",
+            "property": {
+                "publisher": "imb",
+                "topic": "Unmanned",
+                "method": "zoomTo",
+                "property": {
+                    "header": "",
+                    "optionsYesNo": false,
+                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "autoSwitchInSeconds": 20,
+                    "backgroundColorRgb": "255, 0, 0",
+                    "message": "Auto switch in {0:0,2} seconds",
+                    "attach": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                56.246810,
+                                26.180817
+                            ]
+                        }
+                    }
                 }
             }
         }]
