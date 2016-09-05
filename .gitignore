@@ -34,3 +34,5 @@ node_modules
 
 # Ignore output folder
 lib
+# Ignore GUI folder (contains export of csWeb-rules-gui project)
+gui
