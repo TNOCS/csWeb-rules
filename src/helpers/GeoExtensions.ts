@@ -41,7 +41,7 @@ export class GeoExtenions {
         let insideFeatures: GeoJSON.Feature<GeoJSON.Point>[] = [];
 
         features.forEach(f => {
-            if (f.type !== 'Point') return;
+            if (f.hasOwnProperty('geometry') && f.geometry.type !== 'Point') return;
             let pointFeature: GeoJSON.Feature<GeoJSON.Point> = <GeoJSON.Feature<GeoJSON.Point>>f;
             if (turf.inside(pointFeature, boundary)) insideFeatures.push(pointFeature);
         });
