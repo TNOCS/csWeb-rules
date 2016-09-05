@@ -142,6 +142,7 @@ export class Rule implements IRule {
     if (this.activationType !== 'Continuous') {
       this.activatedFeatureIds = [];
     }
+    this.description = rule.description || '';
     this.recurrence = rule.recurrence || 1;
     this.featureId = rule.featureId;
     this.conditions = rule.conditions;
