@@ -7,12 +7,14 @@ export interface IRuleEngineConfig {
   simulationRate?: number;
   actionsFolder?: string;
   conditionsFolder?: string;
+  guiPort?: number;
 }
 
 export class RuleEngineConfig implements IRuleEngineConfig {
   rulesFolder: string;
   actionsFolder: string;
   conditionsFolder: string;
+  guiPort = 8123;
 
   simulationStartTime: Date = new Date();
   simulationRate = 1;
@@ -21,6 +23,10 @@ export class RuleEngineConfig implements IRuleEngineConfig {
     const defaultRulesFolder = 'rules';
     const defaultActionsFolder = 'actions';
     const defaultConditionsFolder = 'conditions';
+
+    if (config && config.guiPort) {
+      this.guiPort = config.guiPort;
+    }
 
     this.rulesFolder = this.createFolderPath(defaultRulesFolder, config && config.rulesFolder);
     console.warn(this.rulesFolder);
