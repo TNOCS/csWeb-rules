@@ -2,6 +2,7 @@ import fs = require('fs');
 import path = require('path');
 import HyperTimer = require('hypertimer');
 import winston = require('winston');
+import {EventEmitter}                         from 'events';
 import {Rule, IRule, IRuleFile, RuleActivationType} from '../models/Rule';
 import {IRuleEngineConfig, RuleEngineConfig}  from './RuleEngineConfig';
 import {IAction, IActionPlugin}               from '../models/Action';
@@ -51,7 +52,7 @@ export interface IRuleEngineService {
   logger?: winston.LoggerInstance;
 }
 
-export class RuleEngine {
+export class RuleEngine extends EventEmitter {
   loadedRuleFiles: string[] = [];
   isInitialised = false;
   router: Router = new Router();
@@ -63,7 +64,7 @@ export class RuleEngine {
   timer: HyperTimer = new HyperTimer();
 
   /** A set of rules. */
-  private rules: IRule[] = [];
+  rules: IRule[] = [];
   /** A set of rules that are active but have not yet fired. */
   private activeRules: IRule[] = [];
   // /** A set of rules that are inactive and may become activated. */
@@ -83,13 +84,13 @@ export class RuleEngine {
    *
    * @type {{ [key: string]: IActionPlugin }}
    */
-  actions: { [key: string]: IActionPlugin } = {};
+  private actions: { [key: string]: IActionPlugin } = {};
   /**
    * A list of conditions that are dynamically loaded from the conditions folder.
    *
    * @type {{ [key: string]: IConditionPlugin }}
    */
-  conditions: { [key: string]: IConditionPlugin } = {};
+  private conditions: { [key: string]: IConditionPlugin } = {};
 
   /**
    * Creates an instance of RuleEngine.
@@ -98,6 +99,8 @@ export class RuleEngine {
    * @param {string} [ruleConfigFile='ruleConfig.json']
    */
   constructor(private done: Function, public config: IRuleEngineConfig) {
+    super();
+
     this.config = new RuleEngineConfig(config);
     this.loadConditionPlugins();
     this.loadActionPlugins();
@@ -345,6 +348,7 @@ export class RuleEngine {
         logger.error(`Error importing feature from ${importFile}: Key ${id} already exitst! Feature:\n ${JSON.stringify(f, null, 2)}`);
         return;
       } else {
+        f.id = id;
         importedFeatures[id] = f;
       }
     });
@@ -386,6 +390,7 @@ export class RuleEngine {
       this.isBusy = false;
       // Update the set of applicable rules
       this.activeRules = this.rules.filter(r => r.isActive);
+      this.emit(`evaluation_ready`);
       logger.info('Ready evaluating rules... waiting for updates.');
     }
   }
