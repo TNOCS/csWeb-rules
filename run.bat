@@ -1,0 +1,1 @@
+node lib/src/engine/RuleEngineCli -g -f examples/unmanned
