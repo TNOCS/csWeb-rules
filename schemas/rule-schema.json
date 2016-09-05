@@ -32,7 +32,8 @@
                 "OnEnter",
                 "OnExit",
                 "OnChange",
-                "Continuously"
+                "Continuous",
+                "Manual"
             ],
             "default": "Continuously",
             "description": "Determines when the rule should be activated / triggered."
@@ -203,12 +204,20 @@
                             "description": "Message to show in the client."
                         },
                         "attach": {
-                            "enum": [
+                          "oneOf": [
+                            {
+                              "enum": [
                                 "$feature",
                                 "$properties",
                                 "$geometry"
-                            ],
-                            "description": "Attach either the complete feature, or its properties or geometry to the message."
+                              ],
+                              "description": "Attach either the complete feature, its properties or geometry to the message."
+                            },
+                            {
+                              "type": "object",
+                              "description": "Alternatively, you can also provide an attached object."
+                            }
+                          ]
                         }
                     }
                 }
