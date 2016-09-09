@@ -37,16 +37,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 2 event truck approaches sensitive RoI.png",
+                    "message": "Truck approaches sensitive RoI",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.240626,
                                 26.165764
@@ -69,16 +70,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 2 roadblock explicit.png",
+                    "message": "Roadblock (explicit)",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.247179,
                                 26.170154
@@ -101,16 +103,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 2 hostile group gathering.png",
+                    "message": "Hostile group gathering",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.199079,
                                 26.126598
@@ -133,16 +136,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 2 event Hostile vehicles detected.png",
+                    "message": "Hostile vehicles detected",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.247055,
                                 26.176094
@@ -165,16 +169,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 3 hostile persons by mosque.png",
+                    "message": "Hostile persons by mosque",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.245849,
                                 26.172072
@@ -197,16 +202,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "PRIO 1",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 3 hostile group walking.png",
+                    "message": "Hostile group gathering",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.246514,
                                 26.182236
@@ -229,16 +235,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "EVENT",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 3 event IED explodes.png",
+                    "message": "IED explodes",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.247163,
                                 26.177591
@@ -261,16 +268,17 @@
                 "topic": "Unmanned",
                 "method": "zoomTo",
                 "property": {
-                    "header": "",
+                    "header": "EVENT",
                     "optionsYesNo": false,
-                    "relativeImageUri": "images/ADA CONCEPT 2-02b.png",
+                    "relativeImageUri": "images/Run 3 event vehicles drive direction embassy.png",
+                    "message": "Vehicles drive in direction of embassy",
                     "autoSwitchInSeconds": 20,
                     "backgroundColorRgb": "255, 0, 0",
-                    "message": "Auto switch in {0:0,2} seconds",
+                    "autoSwitchMessage": "Auto switch in {0:0} seconds",
                     "attach": {
                         "type": "Feature",
                         "geometry": {
-                            "type": "Polygon",
+                            "type": "Point",
                             "coordinates": [
                                 56.246810,
                                 26.180817
