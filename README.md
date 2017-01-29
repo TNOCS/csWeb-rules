@@ -1,5 +1,7 @@
 # csWeb-rules
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/efb85676367f40feaad5437ba24fe7c5)](https://www.codacy.com/app/erikvullings/csWeb-rules?utm_source=github.com&utm_medium=referral&utm_content=TNOCS/csWeb-rules&utm_campaign=badger)
+
 A rule or scenario engine for csWeb which uses a Domain Specific Language (DSL) for specifying the rules. It can also be used standalone, allowing you to implement your own DSL.
 
 # Installation
