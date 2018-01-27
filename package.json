@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "command-line-usage": "^3.0.3",
-    "hypertimer": "^2.1.3",
+    "hypertimer": "^3.0.0",
     "turf": "^3.0.11",
     "winston": "^2.2.0",
     "snyk": "^1.25.0"
