@@ -23,7 +23,7 @@
     "rules": "./bin/run.js"
   },
   "dependencies": {
-    "command-line-usage": "^3.0.3",
+    "command-line-usage": "^4.0.0",
     "hypertimer": "^2.1.3",
     "turf": "^3.0.11",
     "winston": "^2.2.0",
